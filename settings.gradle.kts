@@ -2,6 +2,7 @@ rootProject.name = providers.gradleProperty("app.display.name").getOrElse("")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
+    includeBuild("buildLogic")
     repositories {
         google {
             mavenContent {
