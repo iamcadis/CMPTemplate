@@ -23,6 +23,7 @@ tasks.register<GenerateIosConfigTask>("generateIosConfig") {
     versionName.set(providers.gradleProperty("version.name"))
 }
 
+
 tasks.matching {
     it.name.contains("build", ignoreCase = true) ||
             it.name.contains("assemble", ignoreCase = true) ||

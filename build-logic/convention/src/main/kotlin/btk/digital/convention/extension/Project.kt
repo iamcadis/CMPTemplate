@@ -1,4 +1,4 @@
-package btk.digital.convention.extensions
+package btk.digital.convention.extension
 
 import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion

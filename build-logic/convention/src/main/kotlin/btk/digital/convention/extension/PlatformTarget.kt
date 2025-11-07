@@ -1,4 +1,4 @@
-package btk.digital.convention.extensions
+package btk.digital.convention.extension
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension

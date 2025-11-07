@@ -1,9 +1,9 @@
 package btk.digital.convention
 
-import btk.digital.convention.extensions.addAndroidTarget
-import btk.digital.convention.extensions.addIosTarget
-import btk.digital.convention.extensions.configureAndroid
-import btk.digital.convention.extensions.getPluginId
+import btk.digital.convention.extension.addAndroidTarget
+import btk.digital.convention.extension.addIosTarget
+import btk.digital.convention.extension.configureAndroid
+import btk.digital.convention.extension.getPluginId
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -45,7 +45,7 @@ class KMPApplicationPlugin : Plugin<Project> {
 
                 sourceSets {
                     commonMain.dependencies {
-                        implementation(project(":designSystem"))
+                        implementation(project(":design-system"))
                     }
                 }
             }
