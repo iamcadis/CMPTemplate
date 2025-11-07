@@ -8,6 +8,7 @@ import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 class KMPApplicationPlugin : Plugin<Project> {
@@ -41,6 +42,12 @@ class KMPApplicationPlugin : Plugin<Project> {
             configure<KotlinMultiplatformExtension> {
                 addAndroidTarget()
                 addIosTarget()
+
+                sourceSets {
+                    commonMain.dependencies {
+                        implementation(project(":designSystem"))
+                    }
+                }
             }
         }
     }

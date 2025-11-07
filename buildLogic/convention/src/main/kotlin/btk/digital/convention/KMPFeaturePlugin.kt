@@ -17,7 +17,7 @@ class KMPFeaturePlugin : Plugin<Project> {
             configure<KotlinMultiplatformExtension> {
                 sourceSets {
                     commonMain.dependencies {
-                        // add library for feature
+                        implementation(project(":designSystem"))
                     }
                 }
             }
