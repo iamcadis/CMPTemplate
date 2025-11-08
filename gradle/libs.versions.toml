@@ -4,6 +4,7 @@ kotlin = "2.2.21"
 compose = "1.9.2"
 activity = "1.11.0"
 lifecycle = "2.9.5"
+koin = "4.1.1"
 
 [libraries]
 gradle-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -14,6 +15,12 @@ kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotl
 androidx-activity = { module = "androidx.activity:activity-compose", version.ref = "activity" }
 lifecycle-runtime = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+
+#KOIN
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin"}
+koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin"}
+koin-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin"}
+koin-navigation = { group = "io.insert-koin", name = "koin-compose-viewmodel-navigation", version.ref = "koin"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

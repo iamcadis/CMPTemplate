@@ -18,3 +18,10 @@ captures
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
 release/
+
+# Google service file for Android
+google-services.json
+
+# Google service file for iOS
+GoogleService-Info-Debug.plist
+GoogleService-Info-Release.plist
