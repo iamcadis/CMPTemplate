@@ -1,17 +1,15 @@
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.register
 
 @CacheableTask
-abstract class GenerateIosConfigTask : DefaultTask() {
+abstract class GenerateIosConfig : DefaultTask() {
     @get:Input abstract val teamId: Property<String>
     @get:Input abstract val productName: Property<String>
     @get:Input abstract val bundleId: Property<String>
@@ -59,7 +57,7 @@ abstract class GenerateIosConfigTask : DefaultTask() {
 }
 
 fun Project.registerGeneratorIosConfig() {
-    val generateIosConfig = tasks.register<GenerateIosConfigTask>("generateIosConfig") {
+    val generateIosConfig = tasks.register<GenerateIosConfig>("generateIosConfig") {
         xcconfig.set(layout.projectDirectory.file("iosApp/Configuration/Config.xcconfig"))
         teamId.set(providers.gradleProperty("ios.team.id"))
         productName.set(providers.gradleProperty("ios.product.name"))
@@ -74,10 +72,4 @@ fun Project.registerGeneratorIosConfig() {
 
     dependsIfExists(name = "build", task = generateIosConfig)
     dependsIfExists(name = "assemble", task = generateIosConfig)
-}
-
-fun Project.dependsIfExists(name: String, task: TaskProvider<out Task>) {
-    tasks.matching { it.name.contains(name, ignoreCase = true) }.configureEach {
-        dependsOn(task)
-    }
 }
