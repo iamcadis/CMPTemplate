@@ -5,8 +5,9 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(libs.lifecycle.runtime)
-            api(libs.lifecycle.viewmodel)
+            api(libs.koin.core)
+            api(libs.bundles.kotlinx)
+            api(libs.bundles.lifecycle)
         }
     }
 }
