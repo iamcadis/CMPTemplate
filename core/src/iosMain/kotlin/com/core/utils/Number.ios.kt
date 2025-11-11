@@ -9,6 +9,7 @@ actual fun Double.toCurrency(locale: Locale): String {
     val formatter = NSNumberFormatter().apply {
         this.locale = locale.platformLocale
         this.numberStyle = NSNumberFormatterCurrencyStyle
+        this.minimumFractionDigits = 2.toULong()
         this.maximumFractionDigits = 2.toULong()
     }
 
