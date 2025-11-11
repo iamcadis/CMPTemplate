@@ -8,5 +8,5 @@ actual fun Double.toCurrency(locale: Locale): String {
         .getCurrencyInstance(locale.platformLocale).apply {
             maximumFractionDigits = 2
         }
-        .format(this)
+        .format(rounded())
 }

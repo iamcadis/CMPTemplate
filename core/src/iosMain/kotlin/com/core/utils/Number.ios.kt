@@ -12,7 +12,7 @@ actual fun Double.toCurrency(locale: Locale): String {
         this.maximumFractionDigits = 2.toULong()
     }
 
-    val number = NSNumber(double = this)
+    val number = NSNumber(double = rounded())
     val defaultValue = "${formatter.currencySymbol}0${formatter.decimalSeparator}00"
 
     return formatter.stringFromNumber(number) ?: defaultValue
