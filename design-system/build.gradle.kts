@@ -6,10 +6,7 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(compose.ui)
-            api(compose.runtime)
             api(compose.material3)
-            api(compose.foundation)
         }
     }
 }

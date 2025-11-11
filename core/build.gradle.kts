@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.appLibrary)
+    alias(libs.plugins.appCompose)
 }
 
 kotlin {

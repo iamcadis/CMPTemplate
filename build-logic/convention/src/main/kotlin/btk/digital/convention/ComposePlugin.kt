@@ -25,8 +25,9 @@ class ComposePlugin : Plugin<Project> {
                         implementation(compose.preview)
                     }
                     commonMain.dependencies {
-                        implementation(compose.components.resources)
-                        implementation(compose.components.uiToolingPreview)
+                        implementation(compose.ui)
+                        implementation(compose.runtime)
+                        implementation(compose.foundation)
                     }
                 }
             }
