@@ -9,6 +9,12 @@ import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+/**
+ * Returns the current LocalDateTime in the specified time zone.
+ *
+ * @param timeZone The time zone to use. Defaults to the system's default time zone.
+ * @return The current LocalDateTime.
+ */
 @OptIn(ExperimentalTime::class)
 fun LocalDateTime.Companion.current(
     timeZone: TimeZone = TimeZone.currentSystemDefault()
@@ -16,12 +22,41 @@ fun LocalDateTime.Companion.current(
     return Clock.System.now().toLocalDateTime(timeZone)
 }
 
+/**
+ * Formats this LocalDateTime as a string.
+ *
+ * @param format The format to use.
+ * @param locale The locale to use. Defaults to the current locale.
+ * @param atZone The time zone of this LocalDateTime. Defaults to the system's default time zone.
+ * @param toZone The time zone to format the string in. Defaults to `atZone`.
+ * @return The formatted string, or null if an error occurs.
+ */
 expect fun LocalDateTime.asString(
-    pattern: String,
+    format: String,
     locale: Locale = Locale.current,
-    timeZone: TimeZone = TimeZone.currentSystemDefault(),
+    atZone: TimeZone = TimeZone.currentSystemDefault(),
+    toZone: TimeZone = atZone,
 ): String?
 
-expect fun LocalDate.asString(pattern: String, locale: Locale = Locale.current): String?
+/**
+ * Formats this LocalDate as a string.
+ *
+ * @param format The format to use.
+ * @param locale The locale to use. Defaults to the current locale.
+ * @return The formatted string, or null if an error occurs.
+ */
+expect fun LocalDate.asString(format: String, locale: Locale = Locale.current): String?
 
-expect fun LocalTime.asString(pattern: String, locale: Locale = Locale.current): String?
+/**
+ * Formats this LocalTime as a string.
+ *
+ * @param format The format to use.
+ * @param locale The locale to use. Defaults to the current locale.
+ * @param atZone The time zone of this LocalTime. Defaults to the system's default time zone.
+ * @return The formatted string, or null if an error occurs.
+ */
+expect fun LocalTime.asString(
+    format: String,
+    locale: Locale = Locale.current,
+    atZone: TimeZone = TimeZone.currentSystemDefault(),
+): String?

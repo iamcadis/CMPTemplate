@@ -5,34 +5,44 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atDate
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toJavaLocalTime
 import kotlinx.datetime.toJavaZoneId
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-actual fun LocalDateTime.asString(pattern: String, locale: Locale, timeZone: TimeZone): String? {
+actual fun LocalDateTime.asString(
+    format: String,
+    locale: Locale,
+    atZone: TimeZone,
+    toZone: TimeZone,
+): String? {
+    return this.toJavaLocalDateTime()
+        .atZone(atZone.toJavaZoneId())
+        .withZoneSameInstant(toZone.toJavaZoneId())
+        .format(DateTimeFormatter.ofPattern(format, locale.platformLocale))
+}
+
+actual fun LocalDate.asString(format: String, locale: Locale): String? {
     return runCatching {
-        toJavaLocalDateTime()
-            .atZone(ZoneOffset.UTC)
-            .withZoneSameInstant(timeZone.toJavaZoneId())
-            .format(DateTimeFormatter.ofPattern(pattern, locale.platformLocale))
+        toJavaLocalDate().format(getDateFormatter(format, locale))
     }.getOrNull()
 }
 
-actual fun LocalDate.asString(pattern: String, locale: Locale): String? {
-    return runCatching {
-        toJavaLocalDate().format(getDateFormatter(pattern, locale))
-    }.getOrNull()
+actual fun LocalTime.asString(format: String, locale: Locale, atZone: TimeZone): String? {
+    return this.atDate(year = 2000, month = 1, day = 1)
+        .asString(format = format, locale = locale, atZone = atZone)
 }
 
-actual fun LocalTime.asString(pattern: String, locale: Locale): String? {
-    return runCatching {
-        toJavaLocalTime().format(getDateFormatter(pattern, locale))
-    }.getOrNull()
-}
-
-private fun getDateFormatter(pattern: String, locale: Locale): DateTimeFormatter {
-    return DateTimeFormatter.ofPattern(pattern, locale.platformLocale)
+private fun getDateFormatter(
+    format: String,
+    locale: Locale,
+    zoneId: ZoneId? = null
+): DateTimeFormatter {
+    val formatter = DateTimeFormatter.ofPattern(format, locale.platformLocale)
+    zoneId?.let {
+        formatter.withZone(zoneId)
+    }
+    return DateTimeFormatter.ofPattern(format, locale.platformLocale)
 }

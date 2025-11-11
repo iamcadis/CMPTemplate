@@ -32,27 +32,29 @@ import template.feature.home.generated.resources.compose_multiplatform
 @Composable
 fun HomeScreen() {
     var showContent by remember { mutableStateOf(false) }
-    val currentDate = remember { LocalDateTime.current() }
+    val currentDate = remember { LocalDateTime.current(timeZone = TimeZone.UTC) }
 
     val date = remember(currentDate) {
         currentDate.date.asString(
-            pattern = "d MMM yyyy",
+            format = "d MMM yyyy",
             locale = Locale("id-ID"),
         )
     }
 
     val time = remember(currentDate) {
         currentDate.time.asString(
-            pattern = "HH:mm zzz",
+            format = "HH:mm zzz",
             locale = Locale("id-ID"),
+            atZone = TimeZone.UTC
         )
     }
 
     val dateTime = remember(currentDate) {
         currentDate.asString(
-            pattern = "d MMMM yyyy, HH:mm zzz",
+            format = "d MMMM yyyy, HH:mm zzz",
             locale = Locale("id-ID"),
-            timeZone = TimeZone.of("Asia/Jayapura")
+            atZone = TimeZone.UTC,
+            toZone = TimeZone.currentSystemDefault(),
         )
     }
 
@@ -67,7 +69,7 @@ fun HomeScreen() {
         Text("CURRENT => $currentDate")
         Text("CURRENT DATE => $date")
         Text("CURRENT TIME => $time")
-        Text("CURRENT IN JAYAPURA => $dateTime")
+        Text("CURRENT IN DEVICE ZONE => $dateTime")
         Text("EXAMPLE CURRENCY ID => ${123.598.toCurrency(locale = Locale("id-ID"))}")
 
         Button(onClick = { showContent = !showContent }) {

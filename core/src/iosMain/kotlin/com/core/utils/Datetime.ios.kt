@@ -14,26 +14,41 @@ import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSLocale
 import platform.Foundation.NSTimeZone
 
-actual fun LocalDateTime.asString(pattern: String, locale: Locale, timeZone: TimeZone): String? {
-    return toNSDateComponents().format(
-        pattern = pattern,
+actual fun LocalDateTime.asString(
+    format: String,
+    locale: Locale,
+    atZone: TimeZone,
+    toZone: TimeZone,
+): String? {
+    val nsDateComponents = this.toNSDateComponents()
+    nsDateComponents.setTimeZone(atZone.toNSTimeZone())
+
+    return nsDateComponents.format(
+        format = format,
         nsLocale = locale.platformLocale,
-        nsTimeZone = timeZone.toNSTimeZone()
+        nsTimeZone = toZone.toNSTimeZone()
     )
 }
 
-actual fun LocalDate.asString(pattern: String, locale: Locale): String? {
-    return toNSDateComponents().format(pattern = pattern, nsLocale = locale.platformLocale)
+actual fun LocalDate.asString(format: String, locale: Locale): String? {
+    return this.toNSDateComponents()
+        .format(format = format, nsLocale = locale.platformLocale)
 }
 
-actual fun LocalTime.asString(pattern: String, locale: Locale): String? {
-    return this.atDate(year = 2000, month = 1, day = 1)
-        .toNSDateComponents()
-        .format(pattern = pattern, nsLocale = locale.platformLocale)
-    }
+actual fun LocalTime.asString(format: String, locale: Locale, atZone: TimeZone): String? {
+    val nsDateComponents = this.atDate(year = 2000, month = 1, day = 1).toNSDateComponents()
+    nsDateComponents.setTimeZone(atZone.toNSTimeZone())
+
+    return nsDateComponents.format(
+        format = format,
+        nsLocale = locale.platformLocale,
+        nsTimeZone = atZone.toNSTimeZone()
+    )
+}
+
 
 private fun NSDateComponents.format(
-    pattern: String,
+    format: String,
     nsLocale: NSLocale,
     nsTimeZone: NSTimeZone? = null
 ): String? {
@@ -41,7 +56,7 @@ private fun NSDateComponents.format(
         val nsDate = NSCalendar.currentCalendar.dateFromComponents(this) ?: return null
         val dateFormatter = NSDateFormatter().apply {
             locale = nsLocale
-            dateFormat = pattern
+            dateFormat = format
 
             nsTimeZone?.let { timeZone = it }
         }
