@@ -1,5 +1,6 @@
 package com.core.utils
 
+import androidx.compose.ui.text.intl.Locale
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -7,9 +8,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-
-val TimeZone.Companion.AsiaJakarta: TimeZone
-    get() = TimeZone.of("Asia/Jakarta")
 
 @OptIn(ExperimentalTime::class)
 fun LocalDateTime.Companion.current(
@@ -20,10 +18,10 @@ fun LocalDateTime.Companion.current(
 
 expect fun LocalDateTime.asString(
     pattern: String,
-    localeId: String = "id-ID",
-    timeZone: TimeZone = TimeZone.AsiaJakarta,
+    locale: Locale = Locale.current,
+    timeZone: TimeZone = TimeZone.currentSystemDefault(),
 ): String?
 
-expect fun LocalDate.asString(pattern: String, localeId: String = "id-ID"): String?
+expect fun LocalDate.asString(pattern: String, locale: Locale = Locale.current): String?
 
-expect fun LocalTime.asString(pattern: String, localeId: String = "id-ID"): String?
+expect fun LocalTime.asString(pattern: String, locale: Locale = Locale.current): String?

@@ -1,5 +1,6 @@
 package com.core.utils
 
+import androidx.compose.ui.text.intl.Locale
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -10,34 +11,28 @@ import kotlinx.datetime.toJavaLocalTime
 import kotlinx.datetime.toJavaZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.Locale
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
-actual fun LocalDateTime.asString(
-    pattern: String,
-    localeId: String,
-    timeZone: TimeZone,
-): String? {
+actual fun LocalDateTime.asString(pattern: String, locale: Locale, timeZone: TimeZone): String? {
     return runCatching {
-        val locale = Locale.forLanguageTag(localeId)
         toJavaLocalDateTime()
             .atZone(ZoneOffset.UTC)
             .withZoneSameInstant(timeZone.toJavaZoneId())
-            .format(DateTimeFormatter.ofPattern(pattern, locale))
+            .format(DateTimeFormatter.ofPattern(pattern, locale.platformLocale))
     }.getOrNull()
 }
 
-actual fun LocalDate.asString(pattern: String, localeId: String): String? {
+actual fun LocalDate.asString(pattern: String, locale: Locale): String? {
     return runCatching {
-        val locale = Locale.forLanguageTag(localeId)
-        toJavaLocalDate().format(DateTimeFormatter.ofPattern(pattern, locale))
+        toJavaLocalDate().format(getDateFormatter(pattern, locale))
     }.getOrNull()
 }
 
-actual fun LocalTime.asString(pattern: String, localeId: String): String? {
+actual fun LocalTime.asString(pattern: String, locale: Locale): String? {
     return runCatching {
-        val locale = Locale.forLanguageTag(localeId)
-        toJavaLocalTime().format(DateTimeFormatter.ofPattern(pattern, locale))
+        toJavaLocalTime().format(getDateFormatter(pattern, locale))
     }.getOrNull()
+}
+
+private fun getDateFormatter(pattern: String, locale: Locale): DateTimeFormatter {
+    return DateTimeFormatter.ofPattern(pattern, locale.platformLocale)
 }
