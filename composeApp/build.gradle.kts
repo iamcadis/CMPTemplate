@@ -7,10 +7,9 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.activity)
         }
-//        commonMain.dependencies {
-//            implementation(libs.lifecycle.runtime)
-//            implementation(libs.lifecycle.viewmodel)
-//        }
+        commonMain.dependencies {
+            implementation(project(":feature:home"))
+        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }

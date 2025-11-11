@@ -5,17 +5,21 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atDate
 import kotlinx.datetime.toNSDateComponents
 import kotlinx.datetime.toNSTimeZone
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSDateComponents
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSLocale
+import platform.Foundation.NSTimeZone
 
 actual fun LocalDateTime.asString(pattern: String, locale: Locale, timeZone: TimeZone): String? {
-    val components = toNSDateComponents()
-    components.setTimeZone(timeZone.toNSTimeZone())
-    return components.format(pattern = pattern, nsLocale = locale.platformLocale)
+    return toNSDateComponents().format(
+        pattern = pattern,
+        nsLocale = locale.platformLocale,
+        nsTimeZone = timeZone.toNSTimeZone()
+    )
 }
 
 actual fun LocalDate.asString(pattern: String, locale: Locale): String? {
@@ -23,20 +27,23 @@ actual fun LocalDate.asString(pattern: String, locale: Locale): String? {
 }
 
 actual fun LocalTime.asString(pattern: String, locale: Locale): String? {
-    val components = NSDateComponents()
-    components.hour = this.hour.toLong()
-    components.minute = this.minute.toLong()
-    components.second = this.second.toLong()
-    components.nanosecond = this.nanosecond.toLong()
-    return components.format(pattern = pattern, nsLocale = locale.platformLocale)
-}
+    return this.atDate(year = 2000, month = 1, day = 1)
+        .toNSDateComponents()
+        .format(pattern = pattern, nsLocale = locale.platformLocale)
+    }
 
-private fun NSDateComponents.format(pattern: String, nsLocale: NSLocale): String? {
+private fun NSDateComponents.format(
+    pattern: String,
+    nsLocale: NSLocale,
+    nsTimeZone: NSTimeZone? = null
+): String? {
     return runCatching {
         val nsDate = NSCalendar.currentCalendar.dateFromComponents(this) ?: return null
         val dateFormatter = NSDateFormatter().apply {
             locale = nsLocale
             dateFormat = pattern
+
+            nsTimeZone?.let { timeZone = it }
         }
 
         dateFormatter.stringFromDate(nsDate)
