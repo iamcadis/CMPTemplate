@@ -11,12 +11,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.core.ui.LocalSnackbarHostState
 import com.feature.home.di.homeModule
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinIsolatedContext
 import org.koin.dsl.koinApplication
 
 @Composable
-@Preview
 fun App() {
     val snackbarHostState = remember { SnackbarHostState() }
 

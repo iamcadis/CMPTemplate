@@ -6,28 +6,29 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atDate
-import kotlinx.datetime.toJavaLocalDate
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toJavaZoneId
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import kotlinx.datetime.atTime
+import kotlinx.datetime.number
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import kotlin.time.ExperimentalTime
+import java.util.TimeZone as JavaTimeZone
 
+@OptIn(ExperimentalTime::class)
 actual fun LocalDateTime.asString(
     format: String,
     locale: Locale,
     atZone: TimeZone,
     toZone: TimeZone,
 ): String? {
-    return this.toJavaLocalDateTime()
-        .atZone(atZone.toJavaZoneId())
-        .withZoneSameInstant(toZone.toJavaZoneId())
-        .format(DateTimeFormatter.ofPattern(format, locale.platformLocale))
+    return this.toInstant(atZone)
+        .toLocalDateTime(toZone)
+        .format(format = format, locale = locale, toZone = toZone)
 }
 
 actual fun LocalDate.asString(format: String, locale: Locale): String? {
-    return runCatching {
-        toJavaLocalDate().format(getDateFormatter(format, locale))
-    }.getOrNull()
+    return this.atTime(hour = 1, minute = 1).format(format = format, locale = locale)
 }
 
 actual fun LocalTime.asString(format: String, locale: Locale, atZone: TimeZone): String? {
@@ -35,14 +36,31 @@ actual fun LocalTime.asString(format: String, locale: Locale, atZone: TimeZone):
         .asString(format = format, locale = locale, atZone = atZone)
 }
 
-private fun getDateFormatter(
+private fun LocalDateTime.format(
     format: String,
     locale: Locale,
-    zoneId: ZoneId? = null
-): DateTimeFormatter {
-    val formatter = DateTimeFormatter.ofPattern(format, locale.platformLocale)
-    zoneId?.let {
-        formatter.withZone(zoneId)
+    toZone: TimeZone? = null
+): String? {
+    val calendar = Calendar.getInstance().apply {
+        toZone?.let {
+            timeZone = JavaTimeZone.getTimeZone(it.id)
+        }
+
+        with(this@format) {
+            set(Calendar.YEAR, date.year)
+            set(Calendar.MONTH, date.month.number - 1)
+            set(Calendar.DAY_OF_MONTH, date.day)
+            set(Calendar.HOUR_OF_DAY, time.hour)
+            set(Calendar.MINUTE, time.minute)
+            set(Calendar.SECOND, time.second)
+        }
     }
-    return DateTimeFormatter.ofPattern(format, locale.platformLocale)
+
+    return runCatching {
+        val formatter = SimpleDateFormat(format, locale.platformLocale)
+        toZone?.let {
+            formatter.timeZone = JavaTimeZone.getTimeZone(it.id)
+        }
+        formatter.format(calendar.time)
+    }.getOrNull()
 }
