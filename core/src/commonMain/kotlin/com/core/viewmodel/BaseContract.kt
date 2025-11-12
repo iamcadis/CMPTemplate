@@ -1,10 +1,7 @@
 package com.core.viewmodel
 
-interface State {
-    val pageLoading: Boolean
-        get() = false
-}
+interface ViewAction
 
-interface Action
+interface ViewEffect
 
-interface Effect
+interface ViewState

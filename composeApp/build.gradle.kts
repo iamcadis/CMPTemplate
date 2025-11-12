@@ -5,7 +5,7 @@ plugins {
 kotlin {
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.androidx.activity)
+            implementation(libs.activity)
         }
         commonMain.dependencies {
             implementation(project(":feature:home"))

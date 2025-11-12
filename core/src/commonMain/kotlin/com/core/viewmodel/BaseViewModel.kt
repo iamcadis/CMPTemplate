@@ -28,7 +28,7 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
  * @param initialState The initial state of the ViewModel
  */
 @OptIn(ExperimentalAtomicApi::class)
-abstract class BaseViewModel<S : State, A : Action, E : Effect>(
+abstract class BaseViewModel<S : ViewState, A : ViewAction, E : ViewEffect>(
     initialState: S
 ) : ViewModel() {
 
@@ -42,7 +42,7 @@ abstract class BaseViewModel<S : State, A : Action, E : Effect>(
     val state: StateFlow<S> = _state
         .onStart {
             // Load initial data only once when flow starts being collected
-            if (hasInitialDataLoaded.compareAndSet(false, true)) {
+            if (hasInitialDataLoaded.compareAndSet(expectedValue = false, newValue = true)) {
                 loadInitialData()
             }
         }
@@ -55,11 +55,11 @@ abstract class BaseViewModel<S : State, A : Action, E : Effect>(
     private val _effect = Channel<E>(Channel.BUFFERED)
     val effect = _effect.receiveAsFlow()
 
-    private val _error = Channel<Throwable>(Channel.BUFFERED)
+    private val _error = Channel<Throwable?>(Channel.BUFFERED)
     val error = _error.receiveAsFlow()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        sendError(exception)
+        sendError(error = exception)
     }
 
     /**
@@ -147,6 +147,10 @@ abstract class BaseViewModel<S : State, A : Action, E : Effect>(
             pendingRetryAction = null
             true
         } ?: false
+    }
+
+    fun clearError() {
+        _error.trySend(null)
     }
 
     override fun onCleared() {

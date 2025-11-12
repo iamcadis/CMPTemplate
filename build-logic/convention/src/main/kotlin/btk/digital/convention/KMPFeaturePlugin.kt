@@ -1,5 +1,6 @@
 package btk.digital.convention
 
+import btk.digital.convention.extension.getPluginId
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -13,6 +14,7 @@ class KMPFeaturePlugin : Plugin<Project> {
         with(target.pluginManager) {
             apply("base.library")
             apply("base.compose")
+            apply(target.getPluginId(alias = "kotlinSerialization"))
         }
 
         with(target.extensions) {
