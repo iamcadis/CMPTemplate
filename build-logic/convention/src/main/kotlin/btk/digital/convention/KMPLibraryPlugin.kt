@@ -20,6 +20,10 @@ class KMPLibraryPlugin : Plugin<Project> {
         with(target.extensions) {
             configure<LibraryExtension> {
                 target.configureAndroid(this)
+
+                defaultConfig {
+                    consumerProguardFiles("consumer-rules.pro")
+                }
             }
             configure<KotlinMultiplatformExtension> {
                 addAndroidTarget()
