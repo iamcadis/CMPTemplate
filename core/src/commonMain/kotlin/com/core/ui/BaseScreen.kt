@@ -1,6 +1,5 @@
 package com.core.ui
 
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
@@ -31,8 +30,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
     viewModel: BaseViewModel<S, A, E>,
-    pageLoading: Boolean = false,
-    loadingText: String? = null,
+    pageLoadingText: String? = null,
     onEffect: (E) -> Unit = {},
     content: @Composable (state: S, dispatch: (A) -> Unit) -> Unit
 ) {
@@ -49,7 +47,7 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
 
     Surface {
         content(state, viewModel::handleAction)
-        LoadingOverlay(show = pageLoading, text = loadingText)
+        LoadingOverlay(show = state.pageLoading, text = pageLoadingText)
     }
 
     error?.let { throwable ->
@@ -57,9 +55,7 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
             else -> {
                 scope.launch {
                     val result = snackbarHostState.showSnackbar(
-                        message = error?.message ?: "An error occurred",
-                        duration = SnackbarDuration.Long,
-                        withDismissAction = true
+                        message = error?.message ?: "An error occurred"
                     )
                     when(result) {
                         SnackbarResult.ActionPerformed -> {
