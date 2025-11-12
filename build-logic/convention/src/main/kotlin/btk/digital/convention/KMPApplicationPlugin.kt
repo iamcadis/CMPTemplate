@@ -45,6 +45,7 @@ class KMPApplicationPlugin : Plugin<Project> {
 
                 sourceSets {
                     commonMain.dependencies {
+                        implementation(project(":core"))
                         implementation(project(":design-system"))
                     }
                 }

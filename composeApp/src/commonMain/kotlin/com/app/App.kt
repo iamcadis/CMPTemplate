@@ -9,33 +9,34 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.core.ui.LocalSnackbarHostState
-import com.feature.home.screen.HomeRoute
-import com.feature.home.screen.HomeScreen
+import com.feature.home.di.homeModule
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.KoinIsolatedContext
+import org.koin.dsl.koinApplication
 
 @Composable
 @Preview
 fun App() {
-    val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    MaterialTheme {
-        Scaffold(
-            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-        ) { paddingValues ->
-            CompositionLocalProvider(value = LocalSnackbarHostState provides snackbarHostState) {
-                NavHost(
-                    navController = navController,
-                    startDestination = HomeRoute,
-                    modifier = Modifier.padding(paddingValues)
-                ) {
-                    composable<HomeRoute> { HomeScreen() }
+    KoinIsolatedContext(context = koinApplication {
+        modules(homeModule)
+    }) {
+        MaterialTheme {
+            Scaffold(
+                snackbarHost = {
+                    SnackbarHost(hostState = snackbarHostState)
+                },
+                content = { paddingValues ->
+                    CompositionLocalProvider(
+                        value = LocalSnackbarHostState provides snackbarHostState,
+                        content = {
+                            NavHost(modifier = Modifier.padding(paddingValues))
+                        }
+                    )
                 }
-            }
+            )
         }
     }
 }
