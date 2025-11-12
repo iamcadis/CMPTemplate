@@ -42,7 +42,7 @@ internal fun LoadingOverlay(show: Boolean, text: String?) {
             CircularProgressIndicator(color = Color.White)
             Text(
                 text = text ?: "Please wait...",
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = Color.White
             )
         }

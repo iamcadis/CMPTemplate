@@ -27,14 +27,12 @@ import template.feature.home.generated.resources.compose_multiplatform
 
 @Composable
 fun HomeScreen() {
-    BaseScreen(
-        viewModel = koinViewModel<HomeViewModel>(),
-        pageLoadingText = "Loading ..."
-    ) { state, dispatch ->
+    BaseScreen(viewModel = koinViewModel<HomeViewModel>()) { state, dispatch ->
         HomeContent(
             state = state,
             onShowImage = { dispatch(HomeAction.ToggleContent) },
-            onTestError = { dispatch(HomeAction.TestShowError) }
+            onTestError = { dispatch(HomeAction.TestShowError) },
+            onTestLoading = { dispatch(HomeAction.ToggleLoading) },
         )
     }
 }
@@ -44,6 +42,7 @@ private fun HomeContent(
     state: HomeState,
     onShowImage: () -> Unit = {},
     onTestError: () -> Unit = {},
+    onTestLoading: () -> Unit = {},
 ) {
     val currentDate = remember { LocalDateTime.current(timeZone = TimeZone.UTC) }
 
@@ -81,10 +80,13 @@ private fun HomeContent(
 
         Row {
             Button(onClick = onShowImage) {
-                Text("Show Image")
+                Text("Toggle")
             }
             Button(onClick = onTestError) {
-                Text("Test Snackbar")
+                Text("Snackbar")
+            }
+            Button(onClick = onTestLoading) {
+                Text("Loading")
             }
         }
 

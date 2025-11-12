@@ -11,16 +11,17 @@ import kotlinx.serialization.Serializable
 object HomeRoute
 
 @Immutable
-data class HomeState(val loading: Boolean, val showContent: Boolean) : ViewState {
+data class HomeState(override val pageLoading: Boolean, val showContent: Boolean) : ViewState {
     companion object {
         @Stable
-        val Initial = HomeState(loading = false, showContent = false)
+        val Initial = HomeState(pageLoading = false, showContent = false)
     }
 }
 
 sealed interface HomeAction : ViewAction {
     data object TestShowError: HomeAction
     data object ToggleContent: HomeAction
+    data object ToggleLoading: HomeAction
 }
 
 sealed interface HomeEffect : ViewEffect

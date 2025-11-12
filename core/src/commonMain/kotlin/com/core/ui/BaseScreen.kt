@@ -13,6 +13,7 @@ import com.core.viewmodel.BaseViewModel
 import com.core.viewmodel.ViewAction
 import com.core.viewmodel.ViewEffect
 import com.core.viewmodel.ViewState
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 /**
