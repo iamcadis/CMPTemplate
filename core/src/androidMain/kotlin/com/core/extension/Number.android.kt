@@ -1,4 +1,4 @@
-package com.core.utils
+package com.core.extension
 
 import androidx.compose.ui.text.intl.Locale
 import java.text.NumberFormat

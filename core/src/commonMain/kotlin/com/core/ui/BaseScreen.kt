@@ -55,7 +55,8 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
             else -> {
                 scope.launch {
                     val result = snackbarHostState.showSnackbar(
-                        message = error?.message ?: "An error occurred"
+                        message = error?.message ?: "An error occurred",
+                        withDismissAction = true
                     )
                     when(result) {
                         SnackbarResult.ActionPerformed -> {

@@ -1,4 +1,4 @@
-package com.core.utils
+package com.core.extension
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onCompletion
