@@ -13,7 +13,6 @@ import com.core.viewmodel.BaseViewModel
 import com.core.viewmodel.ViewAction
 import com.core.viewmodel.ViewEffect
 import com.core.viewmodel.ViewState
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 /**
@@ -28,6 +27,7 @@ import kotlinx.coroutines.launch
  * @param content The main UI content to display when the state is stable.
  *                It receives the current state and a function to dispatch actions.
  */
+@Suppress("ParamsComparedByRef")
 @Composable
 fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
     viewModel: BaseViewModel<S, A, E>,
