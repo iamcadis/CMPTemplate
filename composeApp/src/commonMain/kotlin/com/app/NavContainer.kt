@@ -9,7 +9,7 @@ import com.feature.home.screen.HomeRoute
 import com.feature.home.screen.HomeScreen
 
 @Composable
-fun NavHost(modifier: Modifier = Modifier) {
+fun NavContainer(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
     NavHost(

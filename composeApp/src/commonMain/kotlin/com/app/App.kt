@@ -28,7 +28,7 @@ fun App() {
                         CustomSnackbarHost(state = snackbarHostState)
                     },
                     content = {
-                        NavHost(modifier = Modifier.padding(paddingValues = it))
+                        NavContainer(modifier = Modifier.padding(paddingValues = it))
                     }
                 )
             }
