@@ -7,10 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
@@ -33,6 +34,7 @@ import com.design.system.extension.section
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import template.feature.home.generated.resources.Res
 import template.feature.home.generated.resources.compose_multiplatform
@@ -117,34 +119,36 @@ private fun HomeContent(
         }
 
         item(key = "test_aja") {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("CURRENT: $currentDate")
+                Text("CURRENT IN UTC: $date, $time")
+                Text("CURRENT IN DEVICE: $dateTime")
+                Text("CURRENCY LOCALE ID: ${123.598.toCurrency(locale = Locale("id-ID"))}")
+            }
+        }
 
-                Text("CURRENT => $currentDate")
-                Text("CURRENT DATE => $date")
-                Text("CURRENT TIME => $time")
-                Text("CURRENT IN DEVICE ZONE => $dateTime")
-                Text("EXAMPLE CURRENCY ID => ${123.598.toCurrency(locale = Locale("id-ID"))}")
-
-                Row {
-                    Button(onClick = onShowImage) {
-                        Text("Toggle")
-                    }
-                    Button(onClick = onTestError) {
-                        Text("Snackbar")
-                    }
-                    Button(onClick = onTestLoading) {
-                        Text("Loading")
-                    }
+        item(key = "test_button") {
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Button(onClick = onShowImage) {
+                    Text("Toggle")
                 }
+                Button(onClick = onTestError) {
+                    Text("Snackbar")
+                }
+                Button(onClick = onTestLoading) {
+                    Text("Loading")
+                }
+            }
+        }
 
-                AnimatedVisibility(state.showContent) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Image(painterResource(Res.drawable.compose_multiplatform), null)
-                        Text("Hello")
-                    }
+        item(key = "test_animated_visibility") {
+            AnimatedVisibility(state.showContent) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Image(painterResource(Res.drawable.compose_multiplatform), null)
+                    Text("Hello")
                 }
             }
         }
@@ -158,7 +162,8 @@ fun SettingItem(title: String, isDarkModeToggle: Boolean = false) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .height(height = 52.dp)
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -174,9 +179,15 @@ fun SettingItem(title: String, isDarkModeToggle: Boolean = false) {
             )
         } else {
             Icon(
-                imageVector = Icons.Default.KeyboardDoubleArrowRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeScreenPreview() {
+    HomeContent(state = HomeState.Initial)
 }

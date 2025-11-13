@@ -24,7 +24,6 @@ class KMPFeaturePlugin : Plugin<Project> {
                 sourceSets {
                     commonMain.dependencies {
                         implementation(compose.components.resources)
-                        implementation(compose.components.uiToolingPreview)
                         implementation(project(":core"))
                         implementation(project(":design-system"))
                     }

@@ -4,6 +4,7 @@ import btk.digital.convention.extension.getPluginId
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.compose.ComposeExtension
@@ -30,8 +31,13 @@ class ComposePlugin : Plugin<Project> {
                         implementation(compose.foundation)
                         implementation(compose.material3)
                         implementation(compose.materialIconsExtended)
+                        implementation(compose.components.uiToolingPreview)
                     }
                 }
+            }
+
+            target.dependencies {
+                add("debugImplementation", compose.uiTooling)
             }
         }
     }
