@@ -1,6 +1,5 @@
 package com.core.ui
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDefaults
 import androidx.compose.material3.SnackbarDuration
@@ -14,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 val LocalSnackbarHostState = staticCompositionLocalOf<CustomSnackbarHostState> {
     error("SnackbarHostState not found!")
@@ -56,8 +56,8 @@ fun CustomSnackbarHost(
     SnackbarHost(hostState = state.hostState, modifier = modifier) { data ->
         val (containerColor, contentColor) = when (state.currentType) {
             SnackbarType.INFO -> SnackbarDefaults.color to SnackbarDefaults.contentColor
-            SnackbarType.SUCCESS -> MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.onTertiaryContainer
-            SnackbarType.ERROR -> MaterialTheme.colorScheme.error to MaterialTheme.colorScheme.onError
+            SnackbarType.ERROR -> Color(0xFFEB5757) to Color.White
+            SnackbarType.SUCCESS -> Color(0xFF27AE60) to Color.White
         }
 
         Snackbar(
