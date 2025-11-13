@@ -1,19 +1,16 @@
 package com.core.ui
 
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.core.viewmodel.BaseViewModel
 import com.core.viewmodel.ViewAction
 import com.core.viewmodel.ViewEffect
 import com.core.viewmodel.ViewState
-import kotlinx.coroutines.launch
 
 /**
  * A generic screen container that handles common UI states like loading and errors,
@@ -37,39 +34,21 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val error by viewModel.error.collectAsStateWithLifecycle(initialValue = null)
-
-    val scope = rememberCoroutineScope()
     val snackbarHostState = LocalSnackbarHostState.current
 
     LaunchedEffect(viewModel.effect) {
         viewModel.effect.collect(collector = onEffect)
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.error.collect {
+            snackbarHostState.showSnackbar(message = it.message ?: "An error occurred")
+        }
+    }
+
     Surface {
         content(state, viewModel::handleAction)
         LoadingOverlay(show = state.pageLoading, text = pageLoadingText)
-    }
-
-    error?.let { throwable ->
-        when(throwable) {
-            else -> {
-                scope.launch {
-                    val result = snackbarHostState.showSnackbar(
-                        message = error?.message ?: "An error occurred",
-                        withDismissAction = true
-                    )
-                    when(result) {
-                        SnackbarResult.ActionPerformed -> {
-                            viewModel.retry()
-                        }
-                        SnackbarResult.Dismissed -> {
-                            viewModel.clearError()
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 

@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -55,8 +58,11 @@ abstract class BaseViewModel<S : ViewState, A : ViewAction, E : ViewEffect>(
     private val _effect = Channel<E>(Channel.BUFFERED)
     val effect = _effect.receiveAsFlow()
 
-    private val _error = Channel<Throwable?>(Channel.BUFFERED)
-    val error = _error.receiveAsFlow()
+    private val _error = MutableSharedFlow<Throwable>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val error = _error.asSharedFlow()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
         sendError(error = exception)
@@ -126,7 +132,7 @@ abstract class BaseViewModel<S : ViewState, A : ViewAction, E : ViewEffect>(
      * @param error The error to handle
      */
     protected open fun sendError(error: Throwable) {
-        _error.trySend(error)
+        _error.tryEmit(error)
     }
 
     /**
@@ -149,16 +155,9 @@ abstract class BaseViewModel<S : ViewState, A : ViewAction, E : ViewEffect>(
         } ?: false
     }
 
-    fun clearError() {
-        _error.trySend(null)
-    }
-
     override fun onCleared() {
         super.onCleared()
-        // Clear retry action
-        pendingRetryAction = null
-        // Close channels to prevent memory leaks
         _effect.close()
-        _error.close()
+        pendingRetryAction = null
     }
 }
