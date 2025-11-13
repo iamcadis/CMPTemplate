@@ -1,11 +1,9 @@
 package com.core.ui
 
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.core.viewmodel.BaseViewModel
 import com.core.viewmodel.ViewAction
@@ -42,7 +40,10 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
 
     LaunchedEffect(Unit) {
         viewModel.error.collect {
-            snackbarHostState.showSnackbar(message = it.message ?: "An error occurred")
+            snackbarHostState.showSnackbar(
+                message = it.message ?: "An error occurred",
+                snackType = SnackbarType.ERROR
+            )
         }
     }
 
@@ -50,8 +51,4 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
         content(state, viewModel::handleAction)
         LoadingOverlay(show = state.pageLoading, text = pageLoadingText)
     }
-}
-
-val LocalSnackbarHostState = staticCompositionLocalOf<SnackbarHostState> {
-    error("SnackbarHostState not found!")
 }
