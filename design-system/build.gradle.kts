@@ -3,6 +3,14 @@ plugins {
     alias(libs.plugins.appCompose)
 }
 
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.kotlinx.collections)
+        }
+    }
+}
+
 android {
     namespace = "com.design.system"
 }
