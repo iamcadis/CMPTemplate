@@ -118,12 +118,27 @@ private fun HomeContent(
             )
         }
 
-        item(key = "test_aja") {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        section(title = "Date Time Sample") {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Text("CURRENT: $currentDate")
                 Text("CURRENT IN UTC: $date, $time")
                 Text("CURRENT IN DEVICE: $dateTime")
                 Text("CURRENCY LOCALE ID: ${123.598.toCurrency(locale = Locale("id-ID"))}")
+
+                AnimatedVisibility(state.showContent) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Image(painterResource(Res.drawable.compose_multiplatform), null)
+                        Text("Hello")
+                    }
+                }
             }
         }
 
@@ -137,18 +152,6 @@ private fun HomeContent(
                 }
                 Button(onClick = onTestLoading) {
                     Text("Loading")
-                }
-            }
-        }
-
-        item(key = "test_animated_visibility") {
-            AnimatedVisibility(state.showContent) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Hello")
                 }
             }
         }
