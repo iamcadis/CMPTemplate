@@ -11,17 +11,27 @@ interface Screen {
         get() = false
 
     @Composable
-    fun getTitle(): String? {
-        return null
+    fun getTitle(): String {
+        return ""
     }
 
     @Composable
     fun getConfirmationTitle(): String? {
-        return "Want to leave this page?"
+        return null
     }
 
     @Composable
     fun getConfirmationMessage(): String? {
-        return "Want to leave this page?"
+        return null
+    }
+
+    @Composable
+    fun cancelLabel(): String? {
+        return null
+    }
+
+    @Composable
+    fun confirmLabel(): String? {
+        return null
     }
 }

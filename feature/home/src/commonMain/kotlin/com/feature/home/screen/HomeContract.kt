@@ -26,6 +26,9 @@ object HomeRoute : Screen {
 
 @Serializable
 data class TestRoute(val data: String) : Screen {
+    override val showConfirmationOnLeave: Boolean
+        get() = true
+
     @Composable
     override fun getTitle(): String {
         return stringResource(Res.string.testing)

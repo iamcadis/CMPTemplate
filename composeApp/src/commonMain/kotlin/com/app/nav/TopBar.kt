@@ -14,11 +14,11 @@ import kotlinx.datetime.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(currentScreen: Screen?) {
+fun TopBar(currentScreen: Screen?, onBack: () -> Unit) {
     if (currentScreen == null) return
 
     TopAppBar(
-        title = { currentScreen.getTitle()?.let { Text(text = it) } },
+        title = { Text(text = currentScreen.getTitle()) },
         actions = {
             IconButton(
                 onClick = {
