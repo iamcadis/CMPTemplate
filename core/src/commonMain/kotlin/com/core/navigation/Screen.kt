@@ -3,6 +3,7 @@ package com.core.navigation
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
@@ -11,16 +12,16 @@ import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
+@Stable
 @Serializable
 interface Screen {
-    val title: String?
-        get() = null
-
-    val titleResourceKey: String?
-        get() = null
-
     val showConfirmationOnLeave: Boolean
         get() = false
+
+    @Composable
+    fun getTitle(): String? {
+        return null
+    }
 }
 
 @Immutable

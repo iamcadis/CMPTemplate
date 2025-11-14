@@ -1,6 +1,7 @@
 package com.app
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -19,7 +20,9 @@ fun App() {
     }) {
         MaterialTheme {
             CompositionLocalProvider(value = LocalSnackbarHostState provides snackbarHostState) {
-                NavContainer(snackbarHostState)
+                Surface {
+                    NavContainer(snackbarHostState)
+                }
             }
         }
     }

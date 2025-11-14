@@ -8,15 +8,13 @@ class HomeViewModel : BaseViewModel<HomeState, HomeAction, HomeEffect>(
 ) {
     override fun handleAction(action: HomeAction) {
         when(action) {
+            HomeAction.OpenTestPage -> sendEffect(effect = HomeEffect.NavigateToTestRoute)
             HomeAction.TestShowError -> sendError(
                 error = Exception("Test Error")
             )
-            HomeAction.ToggleContent -> updateState {
-                copy(showContent = !showContent)
-            }
             HomeAction.ToggleLoading -> launchSafe {
                 updateState { copy(pageLoading = true) }
-                delay(1000)
+                delay(5000)
                 updateState { copy(pageLoading = false) }
             }
         }

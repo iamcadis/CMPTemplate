@@ -1,7 +1,6 @@
 package com.feature.home.screen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,39 +11,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.core.extension.asString
-import com.core.extension.current
 import com.core.extension.toCurrency
 import com.core.ui.BaseScreen
 import com.design.system.extension.section
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
-import template.feature.home.generated.resources.Res
-import template.feature.home.generated.resources.compose_multiplatform
 
 @Composable
-fun HomeScreen() {
-    BaseScreen(viewModel = koinViewModel<HomeViewModel>()) { state, dispatch ->
+fun HomeScreen(onNavigateToTestPage: () -> Unit) {
+    BaseScreen(
+        viewModel = koinViewModel<HomeViewModel>(),
+        onEffect = { effect ->
+            when(effect) {
+                HomeEffect.NavigateToTestRoute -> onNavigateToTestPage()
+            }
+        }
+    ) { state, dispatch ->
         HomeContent(
             state = state,
-            onShowImage = { dispatch(HomeAction.ToggleContent) },
+            onOpenTestPage = { dispatch(HomeAction.OpenTestPage) },
             onTestError = { dispatch(HomeAction.TestShowError) },
             onTestLoading = { dispatch(HomeAction.ToggleLoading) },
         )
@@ -54,29 +50,27 @@ fun HomeScreen() {
 @Composable
 private fun HomeContent(
     state: HomeState,
-    onShowImage: () -> Unit = {},
+    onOpenTestPage: () -> Unit = {},
     onTestError: () -> Unit = {},
     onTestLoading: () -> Unit = {},
 ) {
-    val currentDate = remember { LocalDateTime.current(timeZone = TimeZone.UTC) }
-
-    val date = remember(currentDate) {
-        currentDate.date.asString(
+    val date = remember(state.currentDate) {
+        state.currentDate.date.asString(
             format = "d MMM yyyy",
             locale = Locale("id-ID"),
         )
     }
 
-    val time = remember(currentDate) {
-        currentDate.time.asString(
+    val time = remember(state.currentDate) {
+        state.currentDate.time.asString(
             format = "HH:mm zzz",
             locale = Locale("id-ID"),
             atZone = TimeZone.UTC
         )
     }
 
-    val dateTime = remember(currentDate) {
-        currentDate.asString(
+    val dateTime = remember(state.currentDate) {
+        state.currentDate.asString(
             format = "d MMMM yyyy, HH:mm zzz",
             locale = Locale("id-ID"),
             atZone = TimeZone.UTC,
@@ -93,10 +87,9 @@ private fun HomeContent(
                 "Billing & Subscription"
             ),
             "Personalization" to listOf(
-                "Dark Mode",
-                "Appearance",
-                "Language",
-                "Themes Organize"
+                "Open Test Page",
+                "Show Snackbar",
+                "Show Loading"
             )
         )
     }
@@ -112,7 +105,14 @@ private fun HomeContent(
                 itemContent = { item ->
                     SettingItem(
                         title = item,
-                        isDarkModeToggle = item == "Dark Mode"
+                        onClick = {
+                            when(item) {
+                                "Open Test Page" -> onOpenTestPage()
+                                "Show Snackbar" -> onTestError()
+                                "Show Loading" -> onTestLoading()
+                                else -> {}
+                            }
+                        }
                     )
                 }
             )
@@ -125,47 +125,25 @@ private fun HomeContent(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("CURRENT: $currentDate")
+                Text("CURRENT: ${state.currentDate}")
                 Text("CURRENT IN UTC: $date, $time")
                 Text("CURRENT IN DEVICE: $dateTime")
                 Text("CURRENCY LOCALE ID: ${123.598.toCurrency(locale = Locale("id-ID"))}")
-
-                AnimatedVisibility(state.showContent) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Image(painterResource(Res.drawable.compose_multiplatform), null)
-                        Text("Hello")
-                    }
-                }
-            }
-        }
-
-        item(key = "test_button") {
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Button(onClick = onShowImage) {
-                    Text("Toggle")
-                }
-                Button(onClick = onTestError) {
-                    Text("Snackbar")
-                }
-                Button(onClick = onTestLoading) {
-                    Text("Loading")
-                }
             }
         }
     }
 }
 
 @Composable
-fun SettingItem(title: String, isDarkModeToggle: Boolean = false) {
-    var darkModeEnabled by remember { mutableStateOf(true) }
-
+fun SettingItem(
+    title: String,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(height = 52.dp)
+            .clickable(onClick = onClick)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -175,17 +153,10 @@ fun SettingItem(title: String, isDarkModeToggle: Boolean = false) {
             modifier = Modifier.weight(1f)
         )
 
-        if (isDarkModeToggle) {
-            Switch(
-                checked = darkModeEnabled,
-                onCheckedChange = { darkModeEnabled = it },
-            )
-        } else {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-            )
-        }
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+        )
     }
 }
 
