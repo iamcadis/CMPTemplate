@@ -17,20 +17,21 @@ import com.app.nav.buildScreenEntries
 import com.app.nav.currentScreenAsState
 import com.core.ui.CustomSnackbarHost
 import com.core.ui.CustomSnackbarHostState
-import com.core.ui.LocalCurrentScreen
+import com.core.navigation.LocalCurrentScreen
+import com.core.navigation.LocalNavController
 import com.feature.home.screen.HomeRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavContainer(snackbarHostState: CustomSnackbarHostState) {
     val navController = rememberNavController()
-    val screenEntries = remember(navController) {
-        buildScreenEntries(navController)
-    }
-
+    val screenEntries = remember { buildScreenEntries(navController) }
     val currentScreen by navController.currentScreenAsState(screenEntries)
 
-    CompositionLocalProvider(value = LocalCurrentScreen provides currentScreen) {
+    CompositionLocalProvider(
+        LocalNavController provides navController,
+        LocalCurrentScreen provides currentScreen,
+    ) {
         Scaffold(
             snackbarHost = {
                 CustomSnackbarHost(state = snackbarHostState)

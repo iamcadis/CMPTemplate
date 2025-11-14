@@ -1,4 +1,4 @@
-package com.core.ui
+package com.core.navigation
 
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable

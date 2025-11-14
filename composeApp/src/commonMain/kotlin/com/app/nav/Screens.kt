@@ -1,7 +1,7 @@
 package com.app.nav
 
 import androidx.navigation.NavController
-import com.core.ui.ScreenEntry
+import com.core.navigation.ScreenEntry
 import com.feature.home.screen.HomeRoute
 import com.feature.home.screen.HomeScreen
 import kotlinx.collections.immutable.persistentListOf
