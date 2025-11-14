@@ -1,13 +1,20 @@
 package com.app.nav
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.navigation.NavController
 import androidx.navigation.toRoute
 import com.core.navigation.screen.ScreenEntry
+import com.core.ui.BaseScreen
 import com.feature.home.screen.HomeRoute
 import com.feature.home.screen.HomeScreen
+import com.feature.home.screen.HomeViewModel
 import com.feature.home.screen.TestRoute
 import kotlinx.collections.immutable.persistentListOf
+import org.koin.compose.viewmodel.koinViewModel
 
 fun buildScreenEntries(navController: NavController) = persistentListOf(
     ScreenEntry(route = HomeRoute::class) {
@@ -18,6 +25,17 @@ fun buildScreenEntries(navController: NavController) = persistentListOf(
         )
     },
     ScreenEntry(route = TestRoute::class) { entry ->
-        Text(text = entry.toRoute<TestRoute>().data)
+        BaseScreen(
+            viewModel = koinViewModel<HomeViewModel>(),
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { navController.navigateUp() }
+                ) {
+                    Icon(Icons.Default.Edit, contentDescription = "Edit")
+                }
+            }
+        ) { _, _ ->
+            Text(text = "Test: " + entry.toRoute<TestRoute>().data)
+        }
     }
 )

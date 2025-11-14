@@ -21,6 +21,9 @@ import com.app.nav.currentScreenAsState
 import com.app.ui.ConfirmationLeavePage
 import com.core.navigation.LocalCurrentScreen
 import com.core.navigation.LocalNavController
+import com.core.navigation.screen.LocalScreenConfigProvider
+import com.core.navigation.screen.ScreenConfigProvider
+import com.core.navigation.screen.ScreenProvider
 import com.core.ui.CustomSnackbarHost
 import com.core.ui.CustomSnackbarHostState
 import com.feature.home.screen.HomeRoute
@@ -46,9 +49,17 @@ fun NavContainer(snackbarHostState: CustomSnackbarHostState) {
         showConfirmationSheet = false
     }
 
+    var screenProvider by remember { mutableStateOf<ScreenProvider?>(null) }
+    val screenConfigProvider = object : ScreenConfigProvider {
+        override fun setProvider(provider: ScreenProvider) {
+            screenProvider = provider
+        }
+    }
+
     CompositionLocalProvider(
         LocalNavController provides navController,
         LocalCurrentScreen provides currentScreen,
+        LocalScreenConfigProvider provides screenConfigProvider
     ) {
         Scaffold(
             snackbarHost = {
@@ -56,6 +67,9 @@ fun NavContainer(snackbarHostState: CustomSnackbarHostState) {
             },
             topBar = {
                 TopBar(currentScreen = currentScreen, onBack = onBackPress)
+            },
+            floatingActionButton = {
+                screenProvider?.fab?.invoke()
             },
             content = { paddingValues ->
                 NavHost(
