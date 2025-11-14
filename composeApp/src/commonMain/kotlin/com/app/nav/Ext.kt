@@ -8,8 +8,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
-import com.core.navigation.Screen
-import com.core.navigation.ScreenEntry
+import com.core.navigation.screen.Screen
+import com.core.navigation.screen.ScreenEntry
 import kotlinx.collections.immutable.PersistentList
 
 @Composable
