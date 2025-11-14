@@ -1,13 +1,9 @@
 package com.app
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import com.core.ui.CustomSnackbarHost
 import com.core.ui.CustomSnackbarHostState
 import com.core.ui.LocalSnackbarHostState
 import com.feature.home.di.homeModule
@@ -23,14 +19,7 @@ fun App() {
     }) {
         MaterialTheme {
             CompositionLocalProvider(value = LocalSnackbarHostState provides snackbarHostState) {
-                Scaffold(
-                    snackbarHost = {
-                        CustomSnackbarHost(state = snackbarHostState)
-                    },
-                    content = {
-                        NavContainer(modifier = Modifier.padding(paddingValues = it))
-                    }
-                )
+                NavContainer(snackbarHostState)
             }
         }
     }
