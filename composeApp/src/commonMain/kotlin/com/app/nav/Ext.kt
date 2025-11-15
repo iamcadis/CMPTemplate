@@ -12,13 +12,14 @@ import com.core.navigation.screen.Screen
 import com.core.navigation.screen.ScreenEntry
 import kotlinx.collections.immutable.PersistentList
 
+@Suppress("ParamsComparedByRef")
 @Composable
-internal fun NavController.currentScreenAsState(
+fun getCurrentScreen(
+    navController: NavController,
     screenEntries: PersistentList<ScreenEntry<out Screen>>
-): State<Screen?> {
-    val backStackEntry by currentBackStackEntryAsState()
-
-    return produceState(initialValue = null, backStackEntry) {
+): Screen? {
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val state: State<Screen?> = produceState(initialValue = null, backStackEntry) {
         value = backStackEntry?.let { entry ->
             screenEntries.firstOrNull { screen ->
                 entry.destination.hasRoute(screen.route)
@@ -27,4 +28,6 @@ internal fun NavController.currentScreenAsState(
             }
         }
     }
+
+    return state.value
 }

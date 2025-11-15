@@ -2,6 +2,7 @@ package com.core.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,6 +41,7 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
     pageLoadingText: String? = null,
     onEffect: (E) -> Unit = {},
     floatingActionButton: @Composable (() -> Unit)? = null,
+    topBarActions: @Composable (RowScope.() -> Unit)? = null,
     content: @Composable (state: S, dispatch: (A) -> Unit) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -48,7 +50,10 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
 
     LaunchedEffect(Unit) {
         screenConfigProvider.setProvider(
-            provider = ScreenProvider(fab = floatingActionButton)
+            provider = ScreenProvider(
+                fab = floatingActionButton,
+                topBarActions = topBarActions
+            )
         )
     }
 

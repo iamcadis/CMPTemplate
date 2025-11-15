@@ -1,14 +1,18 @@
 package com.core.navigation.screen
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 
 @Immutable
 data class ScreenProvider(
-    val fab: @Composable (() -> Unit)? = null
+    val fab: @Composable (() -> Unit)? = null,
+    val topBarActions: @Composable (RowScope.() -> Unit)? = null,
 )
 
+@Stable
 interface ScreenConfigProvider {
     fun setProvider(provider: ScreenProvider)
 }
