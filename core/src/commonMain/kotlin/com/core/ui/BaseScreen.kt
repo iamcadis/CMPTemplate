@@ -17,6 +17,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.core.LocalScreenConfigProvider
 import com.core.LocalSnackbarHostState
+import com.core.data.Confirmation
 import com.core.navigation.ScreenProvider
 import com.core.viewmodel.BaseViewModel
 import com.core.viewmodel.ViewAction
@@ -53,6 +54,7 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
     showTopBar: Boolean = true,
     loadingText: String = "Please wait...",
     confirmOnLeave: Boolean = false,
+    leaveConfirmation: Confirmation? = null,
     onEffect: (effect: E) -> Unit = {},
     topBarActions: @Composable (RowScope.() -> Unit)? = null,
     floatingActionButton: @Composable (() -> Unit)? = null,
@@ -67,6 +69,7 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
             provider = ScreenProvider(
                 title = if (showTopBar) pageTitle else null,
                 confirmOnLeave = confirmOnLeave,
+                confirmationData = leaveConfirmation,
                 fab = floatingActionButton,
                 topBarActions = topBarActions
             )

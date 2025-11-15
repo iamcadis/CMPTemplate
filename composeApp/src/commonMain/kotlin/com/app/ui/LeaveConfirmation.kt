@@ -45,8 +45,8 @@ internal fun LeaveConfirmation(
             Button(
                 onClick = onCancel,
                 colors = ButtonDefaults.buttonColors().copy(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
                 modifier = Modifier.fillMaxWidth()
                     .padding(horizontal = 16.dp)
