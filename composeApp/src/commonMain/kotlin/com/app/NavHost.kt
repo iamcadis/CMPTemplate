@@ -11,6 +11,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -19,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.app.ui.CustomTopAppBar
@@ -36,6 +38,7 @@ fun NavHost(
     snackbarHostState: CustomSnackbarHostState,
 ) {
     val navController = rememberNavController()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     var showConfirmation by rememberSaveable { mutableStateOf(false) }
 
     val dismissConfirmation: () -> Unit = {
@@ -52,11 +55,16 @@ fun NavHost(
 
     CompositionLocalProvider(value = LocalNavController provides navController) {
         Scaffold(
+            modifier = Modifier.nestedScroll(connection = scrollBehavior.nestedScrollConnection),
             snackbarHost = {
                 CustomSnackbarHost(state = snackbarHostState)
             },
             topBar = {
-                CustomTopAppBar(screenProvider = screenProvider, onBackPress = backPressHandler)
+                CustomTopAppBar(
+                    screenProvider = screenProvider,
+                    scrollBehavior = scrollBehavior,
+                    onBackPress = backPressHandler
+                )
             },
             floatingActionButton = {
                 screenProvider?.fab?.let { it() }

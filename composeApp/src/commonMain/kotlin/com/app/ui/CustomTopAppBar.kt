@@ -6,6 +6,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import com.core.LocalNavController
 import com.core.navigation.ScreenProvider
@@ -13,9 +14,9 @@ import com.core.navigation.ScreenProvider
 @Composable
 fun CustomTopAppBar(
     screenProvider: ScreenProvider?,
-    onBackPress: () -> Unit
+    onBackPress: () -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
-
     val navController = LocalNavController.current
     val hasPreviousScreen = navController.previousBackStackEntry != null
 
@@ -40,7 +41,8 @@ fun CustomTopAppBar(
                 provider.topBarActions?.let { actions ->
                     actions()
                 }
-            }
+            },
+            scrollBehavior = scrollBehavior
         )
     }
 }
