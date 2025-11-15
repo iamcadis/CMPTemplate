@@ -24,26 +24,36 @@ import com.core.viewmodel.ViewEffect
 import com.core.viewmodel.ViewState
 
 /**
- * A generic screen container that handles common UI states like loading and errors,
- * based on a single ViewState stream from a BaseViewModel.
+ * A generic screen composable that provides a base structure for screens in the application.
  *
- * @param S The screen's state type, which must include loading and error properties.
- * @param A The screen's action/intent type.
- * @param E The screen's one-time effect type.
- * @param viewModel The instance of the BaseViewModel for this screen.
- * @param onEffect A callback to handle one-time side effects (e.g., navigation, toast).
- * @param content The main UI content to display when the state is stable.
- *                It receives the current state and a function to dispatch actions.
+ * This composable handles common screen-level concerns such as:
+ * - Collecting and observing state, effects, and errors from a [BaseViewModel].
+ * - Displaying a full-page loading indicator.
+ * - Showing error messages in a snackbar.
+ * - Configuring screen-specific properties like the title, top bar actions, and floating action button.
+ *
+ * @param S The type of the [ViewState] for this screen.
+ * @param A The type of the [ViewAction] that can be dispatched from this screen.
+ * @param E The type of the [ViewEffect] that can be emitted from the ViewModel.
+ * @param viewModel The [BaseViewModel] instance for this screen.
+ * @param pageTitle The title to be displayed in the top app bar.
+ * @param showTopBar Whether to show the top app bar. Defaults to true.
+ * @param loadingText The text to display below the loading indicator. Defaults to "Please wait...".
+ * @param confirmOnLeave If true, a confirmation dialog will be shown when the user tries to navigate away from the screen.
+ * @param onEffect A callback to handle side effects emitted by the ViewModel.
+ * @param topBarActions A composable lambda to define actions for the top app bar.
+ * @param floatingActionButton A composable lambda for the floating action button.
+ * @param content The main content of the screen. It receives the current state and a lambda to dispatch actions.
  */
 @Suppress("ParamsComparedByRef")
 @Composable
 fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
     viewModel: BaseViewModel<S, A, E>,
-    pageTitle: String? = null,
+    pageTitle: String = "",
     showTopBar: Boolean = true,
-    pageLoadingText: String? = null,
+    loadingText: String = "Please wait...",
     confirmOnLeave: Boolean = false,
-    onEffect: (E) -> Unit = {},
+    onEffect: (effect: E) -> Unit = {},
     topBarActions: @Composable (RowScope.() -> Unit)? = null,
     floatingActionButton: @Composable (() -> Unit)? = null,
     content: @Composable (state: S, dispatch: (A) -> Unit) -> Unit
@@ -87,7 +97,7 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
             ) {
                 CircularProgressIndicator(color = Color.White)
                 Text(
-                    text = pageLoadingText ?: "Please wait...",
+                    text = loadingText,
                     style = MaterialTheme.typography.titleMedium,
                     color = Color.White
                 )
