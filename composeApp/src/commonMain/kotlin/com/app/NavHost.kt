@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
@@ -37,7 +37,7 @@ fun NavHost(
     val navController = rememberNavController()
     val scrollBehavior = navController.rememberPinnedScrollBehavior()
 
-    var showConfirmation by remember { mutableStateOf(false) }
+    var showConfirmation by rememberSaveable { mutableStateOf(false) }
     val dismissConfirmation: () -> Unit = {
         showConfirmation = false
     }
