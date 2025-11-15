@@ -11,12 +11,11 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
@@ -25,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.app.ui.CustomTopAppBar
 import com.app.ui.LeaveConfirmation
+import com.app.ui.customPinnedScrollBehavior
 import com.app.ui.getDefaultConfirmation
 import com.core.LocalNavController
 import com.core.navigation.ScreenProvider
@@ -38,9 +38,9 @@ fun NavHost(
     snackbarHostState: CustomSnackbarHostState,
 ) {
     val navController = rememberNavController()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    var showConfirmation by rememberSaveable { mutableStateOf(false) }
+    val scrollBehavior = navController.customPinnedScrollBehavior()
 
+    var showConfirmation by remember { mutableStateOf(false) }
     val dismissConfirmation: () -> Unit = {
         showConfirmation = false
     }
