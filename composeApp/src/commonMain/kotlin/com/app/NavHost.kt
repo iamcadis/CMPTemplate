@@ -1,5 +1,14 @@
 package com.app
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.app.ui.LeaveConfirmation
 import com.app.ui.CustomTopAppBar
+import com.app.ui.LeaveConfirmation
 import com.app.ui.getDefaultConfirmation
 import com.core.LocalNavController
 import com.core.navigation.ScreenProvider
@@ -57,6 +66,24 @@ fun NavHost(
                     navController = navController,
                     startDestination = HomeRoute,
                     modifier = Modifier.padding(paddingValues),
+                    enterTransition = {
+                        fadeIn(
+                            animationSpec = tween(durationMillis = 300, easing = LinearEasing)
+                        ) + slideIntoContainer(
+                            animationSpec = tween(durationMillis = 300, easing = EaseIn),
+                            towards = AnimatedContentTransitionScope.SlideDirection.Start
+                        )
+                    },
+                    exitTransition = {
+                        fadeOut(
+                            animationSpec = tween(durationMillis = 300, easing = LinearEasing)
+                        ) + slideOutOfContainer(
+                            animationSpec = tween(durationMillis = 300, easing = EaseOut),
+                            towards = AnimatedContentTransitionScope.SlideDirection.End
+                        )
+                    },
+                    popEnterTransition = { slideInHorizontally { it } },
+                    popExitTransition = { slideOutHorizontally { -it } },
                     builder = { buildScreens(navController) }
                 )
 

@@ -1,5 +1,6 @@
 package com.app
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -8,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import com.core.LocalScreenConfigProvider
 import com.core.LocalSnackbarHostState
 import com.core.navigation.ScreenConfigProvider
@@ -36,7 +38,7 @@ fun App() {
                 LocalSnackbarHostState provides snackbarHostState,
                 LocalScreenConfigProvider provides screenConfigProvider
             ) {
-                Surface {
+                Surface(modifier = Modifier.fillMaxSize()) {
                     NavHost(screenProvider = screenProvider, snackbarHostState = snackbarHostState)
                 }
             }

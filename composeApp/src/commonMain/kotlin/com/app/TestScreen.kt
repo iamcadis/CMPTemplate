@@ -1,5 +1,7 @@
 package com.app
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Print
@@ -8,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.core.extension.current
 import com.core.ui.BaseScreen
 import com.feature.home.screen.HomeViewModel
@@ -41,6 +44,8 @@ fun TestScreen(data: String) {
             }
         }
     ) { _, _ ->
-        Text(text = "Test: $data")
+        Column(modifier = Modifier.fillMaxSize()) {
+            Text(text = "Test: $data")
+        }
     }
 }
