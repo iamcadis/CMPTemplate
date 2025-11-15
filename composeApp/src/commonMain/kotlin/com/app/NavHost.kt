@@ -1,14 +1,10 @@
 package com.app
 
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -20,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.app.ui.CustomTopAppBar
@@ -77,21 +74,31 @@ fun NavHost(
                     enterTransition = {
                         fadeIn(
                             animationSpec = tween(durationMillis = 300, easing = LinearEasing)
-                        ) + slideIntoContainer(
-                            animationSpec = tween(durationMillis = 300, easing = EaseIn),
+                        ) + slideIn(
                             towards = AnimatedContentTransitionScope.SlideDirection.Start
                         )
                     },
                     exitTransition = {
                         fadeOut(
                             animationSpec = tween(durationMillis = 300, easing = LinearEasing)
-                        ) + slideOutOfContainer(
-                            animationSpec = tween(durationMillis = 300, easing = EaseOut),
+                        ) + slideOut(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Start
+                        )
+                    },
+                    popEnterTransition = {
+                        fadeIn(
+                            animationSpec = tween(durationMillis = 300, easing = LinearEasing)
+                        ) + slideIn(
                             towards = AnimatedContentTransitionScope.SlideDirection.End
                         )
                     },
-                    popEnterTransition = { slideInHorizontally { it } },
-                    popExitTransition = { slideOutHorizontally { -it } },
+                    popExitTransition = {
+                        fadeOut(
+                            animationSpec = tween(durationMillis = 300, easing = LinearEasing)
+                        ) + slideOut(
+                            towards = AnimatedContentTransitionScope.SlideDirection.End
+                        )
+                    },
                     builder = { buildScreens(navController) }
                 )
 
@@ -112,3 +119,21 @@ fun NavHost(
         )
     }
 }
+
+private const val DEFAULT_DURATION_MILLIS = 300
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.slideIn(
+    towards: AnimatedContentTransitionScope.SlideDirection
+) = slideIntoContainer(
+    towards = towards,
+    animationSpec = tween(durationMillis = DEFAULT_DURATION_MILLIS, easing = LinearEasing),
+    initialOffset = { it }
+)
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.slideOut(
+    towards: AnimatedContentTransitionScope.SlideDirection
+) = slideOutOfContainer(
+    towards = towards,
+    animationSpec = tween(durationMillis = DEFAULT_DURATION_MILLIS, easing = LinearEasing),
+    targetOffset = { -it }
+)

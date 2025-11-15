@@ -23,7 +23,7 @@ import org.koin.dsl.koinApplication
 fun App() {
     val snackbarHostState = remember { CustomSnackbarHostState() }
 
-    var screenProvider by remember { mutableStateOf<ScreenProvider?>(null) }
+    var screenProvider by remember { mutableStateOf(ScreenProvider()) }
     val screenConfigProvider = object : ScreenConfigProvider {
         override fun setProvider(provider: ScreenProvider) {
             screenProvider = provider

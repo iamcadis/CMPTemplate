@@ -9,7 +9,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -26,7 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
  */
 @Composable
 fun NavController.rememberPinnedScrollBehavior(): TopAppBarScrollBehavior {
-    val topAppBarStates = rememberSaveable { mutableStateMapOf<String, TopAppBarState>() }
+    val topAppBarStates = remember { mutableStateMapOf<String, TopAppBarState>() }
 
     val backStackEntry by currentBackStackEntryAsState()
     val backStackEntries by currentBackStack.collectAsStateWithLifecycle()

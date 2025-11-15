@@ -18,6 +18,7 @@ gradle-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", versi
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 activity = { module = "androidx.activity:activity-compose", version.ref = "activity" }
 navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
+backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose" }
 lifecycle-runtime = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 
