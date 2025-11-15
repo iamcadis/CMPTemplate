@@ -4,6 +4,7 @@ import btk.digital.convention.extension.addAndroidTarget
 import btk.digital.convention.extension.addIosTarget
 import btk.digital.convention.extension.configureAndroid
 import btk.digital.convention.extension.getPluginId
+import btk.digital.convention.extension.suppressOptIn
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -14,8 +15,9 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 class KMPApplicationPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target.pluginManager) {
-            apply(target.getPluginId(alias = "kotlinMultiplatform"))
             apply(target.getPluginId(alias = "androidApplication"))
+            apply(target.getPluginId(alias = "kotlinMultiplatform"))
+            apply(target.getPluginId(alias = "kotlinSerialization"))
             apply("base.compose")
         }
 
@@ -42,6 +44,7 @@ class KMPApplicationPlugin : Plugin<Project> {
             configure<KotlinMultiplatformExtension> {
                 addAndroidTarget()
                 addIosTarget()
+                suppressOptIn()
 
                 sourceSets {
                     commonMain.dependencies {

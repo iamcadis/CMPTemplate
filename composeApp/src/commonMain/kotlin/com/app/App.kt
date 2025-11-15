@@ -8,11 +8,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.core.navigation.screen.LocalScreenConfigProvider
-import com.core.navigation.screen.ScreenConfigProvider
-import com.core.navigation.screen.ScreenProvider
+import com.core.LocalScreenConfigProvider
+import com.core.LocalSnackbarHostState
+import com.core.navigation.ScreenConfigProvider
+import com.core.navigation.ScreenProvider
 import com.core.ui.CustomSnackbarHostState
-import com.core.ui.LocalSnackbarHostState
 import com.feature.home.di.homeModule
 import org.koin.compose.KoinIsolatedContext
 import org.koin.dsl.koinApplication
@@ -37,10 +37,7 @@ fun App() {
                 LocalScreenConfigProvider provides screenConfigProvider
             ) {
                 Surface {
-                    NavContainer(
-                        snackbarHostState = snackbarHostState,
-                        screenProvider = screenProvider
-                    )
+                    NavHost(screenProvider = screenProvider, snackbarHostState = snackbarHostState)
                 }
             }
         }

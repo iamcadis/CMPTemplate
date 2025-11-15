@@ -15,8 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.core.navigation.screen.LocalScreenConfigProvider
-import com.core.navigation.screen.ScreenProvider
+import com.core.LocalScreenConfigProvider
+import com.core.LocalSnackbarHostState
+import com.core.navigation.ScreenProvider
 import com.core.viewmodel.BaseViewModel
 import com.core.viewmodel.ViewAction
 import com.core.viewmodel.ViewEffect
@@ -38,10 +39,12 @@ import com.core.viewmodel.ViewState
 @Composable
 fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
     viewModel: BaseViewModel<S, A, E>,
+    pageTitle: String? = null,
     pageLoadingText: String? = null,
+    confirmOnLeave: Boolean = false,
     onEffect: (E) -> Unit = {},
-    floatingActionButton: @Composable (() -> Unit)? = null,
     topBarActions: @Composable (RowScope.() -> Unit)? = null,
+    floatingActionButton: @Composable (() -> Unit)? = null,
     content: @Composable (state: S, dispatch: (A) -> Unit) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -51,6 +54,8 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
     LaunchedEffect(Unit) {
         screenConfigProvider.setProvider(
             provider = ScreenProvider(
+                title = pageTitle,
+                confirmOnLeave = confirmOnLeave,
                 fab = floatingActionButton,
                 topBarActions = topBarActions
             )

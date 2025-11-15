@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.core.navigation.screen.Screen
+import com.core.data.Confirmation
 import com.design.system.widget.ConfirmationSheet
 import org.jetbrains.compose.resources.stringResource
 import template.composeapp.generated.resources.Res
@@ -21,20 +21,26 @@ import template.composeapp.generated.resources.stay_here
 import template.composeapp.generated.resources.yes_leave
 
 @Composable
-internal fun ConfirmationLeavePage(
+internal fun getDefaultConfirmation(): Confirmation {
+    return Confirmation(
+        title = stringResource(Res.string.leave_page_title),
+        message = stringResource(Res.string.leave_page_message),
+        negativeLabel = stringResource(Res.string.stay_here),
+        positiveLabel = stringResource(Res.string.yes_leave)
+    )
+}
+
+@Composable
+internal fun LeaveConfirmation(
     show: Boolean,
-    screen: Screen,
+    confirmation: Confirmation,
     onCancel: () -> Unit,
     onConfirm: () -> Unit
 ) {
     ConfirmationSheet(
         show = show,
-        title = screen.getConfirmationTitle() ?: stringResource(
-            resource = Res.string.leave_page_title
-        ),
-        message = screen.getConfirmationMessage() ?: stringResource(
-            resource = Res.string.leave_page_message
-        ),
+        title = confirmation.title,
+        message = confirmation.message,
         actions = {
             Button(
                 onClick = onCancel,
@@ -45,9 +51,7 @@ internal fun ConfirmationLeavePage(
                 modifier = Modifier.fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
-                Text(
-                    text = screen.cancelLabel() ?: stringResource(resource = Res.string.stay_here)
-                )
+                Text(text = confirmation.negativeLabel)
             }
             Spacer(modifier = Modifier.height(height = 4.dp))
             Button(
@@ -55,9 +59,7 @@ internal fun ConfirmationLeavePage(
                 modifier = Modifier.fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
-                Text(
-                    text = screen.confirmLabel() ?: stringResource(resource = Res.string.yes_leave)
-                )
+                Text(text = confirmation.positiveLabel)
             }
         }
     )

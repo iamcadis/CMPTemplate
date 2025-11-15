@@ -1,39 +1,17 @@
 package com.feature.home.screen
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.core.extension.current
-import com.core.navigation.screen.Screen
 import com.core.viewmodel.ViewAction
 import com.core.viewmodel.ViewEffect
 import com.core.viewmodel.ViewState
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.Serializable
-import org.jetbrains.compose.resources.stringResource
-import template.feature.home.generated.resources.Res
-import template.feature.home.generated.resources.testing
-import template.feature.home.generated.resources.title
 
 @Serializable
-object HomeRoute : Screen {
-    @Composable
-    override fun getTitle(): String {
-        return stringResource(Res.string.title)
-    }
-}
-
-@Serializable
-data class TestRoute(val data: String) : Screen {
-    override val showConfirmationOnLeave: Boolean
-        get() = true
-
-    @Composable
-    override fun getTitle(): String {
-        return stringResource(Res.string.testing)
-    }
-}
+object HomeRoute
 
 @Immutable
 data class HomeState(

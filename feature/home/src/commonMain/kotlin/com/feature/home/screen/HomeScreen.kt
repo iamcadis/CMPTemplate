@@ -25,13 +25,17 @@ import com.core.extension.toCurrency
 import com.core.ui.BaseScreen
 import com.design.system.extension.section
 import kotlinx.datetime.TimeZone
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import template.feature.home.generated.resources.Res
+import template.feature.home.generated.resources.title
 
 @Composable
 fun HomeScreen(onNavigateToTestPage: () -> Unit) {
     BaseScreen(
         viewModel = koinViewModel<HomeViewModel>(),
+        pageTitle = stringResource(Res.string.title),
         onEffect = { effect ->
             when(effect) {
                 HomeEffect.NavigateToTestRoute -> onNavigateToTestPage()
