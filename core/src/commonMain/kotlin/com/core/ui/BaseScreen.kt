@@ -40,6 +40,7 @@ import com.core.viewmodel.ViewState
 fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
     viewModel: BaseViewModel<S, A, E>,
     pageTitle: String? = null,
+    showTopBar: Boolean = true,
     pageLoadingText: String? = null,
     confirmOnLeave: Boolean = false,
     onEffect: (E) -> Unit = {},
@@ -54,7 +55,7 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
     LaunchedEffect(Unit) {
         screenConfigProvider.setProvider(
             provider = ScreenProvider(
-                title = pageTitle,
+                title = if (showTopBar) pageTitle else null,
                 confirmOnLeave = confirmOnLeave,
                 fab = floatingActionButton,
                 topBarActions = topBarActions
