@@ -1,7 +1,6 @@
 package com.app
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -15,6 +14,7 @@ import com.core.LocalSnackbarHostState
 import com.core.navigation.ScreenConfigProvider
 import com.core.navigation.ScreenProvider
 import com.core.ui.CustomSnackbarHostState
+import com.design.system.AppTheme
 import com.feature.home.di.homeModule
 import org.koin.compose.KoinIsolatedContext
 import org.koin.dsl.koinApplication
@@ -33,7 +33,7 @@ fun App() {
     KoinIsolatedContext(context = koinApplication {
         modules(homeModule)
     }) {
-        MaterialTheme {
+        AppTheme {
             CompositionLocalProvider(
                 LocalSnackbarHostState provides snackbarHostState,
                 LocalScreenConfigProvider provides screenConfigProvider
