@@ -72,30 +72,22 @@ fun NavHost(
                     startDestination = HomeRoute,
                     modifier = Modifier.padding(paddingValues),
                     enterTransition = {
-                        fadeIn(
-                            animationSpec = tween(durationMillis = 300, easing = LinearEasing)
-                        ) + slideIn(
+                        enterTransition(
                             towards = AnimatedContentTransitionScope.SlideDirection.Start
                         )
                     },
                     exitTransition = {
-                        fadeOut(
-                            animationSpec = tween(durationMillis = 300, easing = LinearEasing)
-                        ) + slideOut(
+                        exitTransition(
                             towards = AnimatedContentTransitionScope.SlideDirection.Start
                         )
                     },
                     popEnterTransition = {
-                        fadeIn(
-                            animationSpec = tween(durationMillis = 300, easing = LinearEasing)
-                        ) + slideIn(
+                        enterTransition(
                             towards = AnimatedContentTransitionScope.SlideDirection.End
                         )
                     },
                     popExitTransition = {
-                        fadeOut(
-                            animationSpec = tween(durationMillis = 300, easing = LinearEasing)
-                        ) + slideOut(
+                        exitTransition(
                             towards = AnimatedContentTransitionScope.SlideDirection.End
                         )
                     },
@@ -122,17 +114,21 @@ fun NavHost(
 
 private const val DEFAULT_DURATION_MILLIS = 300
 
-private fun AnimatedContentTransitionScope<NavBackStackEntry>.slideIn(
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.enterTransition(
     towards: AnimatedContentTransitionScope.SlideDirection
-) = slideIntoContainer(
+) = fadeIn(
+    animationSpec = tween(durationMillis = DEFAULT_DURATION_MILLIS, easing = LinearEasing)
+) + slideIntoContainer(
     towards = towards,
     animationSpec = tween(durationMillis = DEFAULT_DURATION_MILLIS, easing = LinearEasing),
     initialOffset = { it }
 )
 
-private fun AnimatedContentTransitionScope<NavBackStackEntry>.slideOut(
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.exitTransition(
     towards: AnimatedContentTransitionScope.SlideDirection
-) = slideOutOfContainer(
+) = fadeOut(
+    animationSpec = tween(durationMillis = 300, easing = LinearEasing)
+) + slideOutOfContainer(
     towards = towards,
     animationSpec = tween(durationMillis = DEFAULT_DURATION_MILLIS, easing = LinearEasing),
     targetOffset = { -it }
