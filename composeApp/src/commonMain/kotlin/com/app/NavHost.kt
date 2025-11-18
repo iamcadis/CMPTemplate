@@ -4,10 +4,12 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.core.ui.CustomSnackbarHostState
+import com.core.ui.LocalSnackbarHostState
 import com.core.ui.NavigationScaffold
 import com.core.ui.data.MsgConfirmation
 import com.core.ui.navigation.LocalNavController
@@ -24,10 +26,7 @@ import template.composeapp.generated.resources.stay_here
 import template.composeapp.generated.resources.yes_leave
 
 @Composable
-fun NavHost(
-    screenProvider: ScreenProvider?,
-    snackbarHostState: CustomSnackbarHostState,
-) {
+fun NavHost(screenProvider: ScreenProvider?) {
     val navController = rememberNavController()
     val scrollBehavior = navController.rememberPinnedScrollBehavior()
     val msgConfirmation = screenProvider?.msgConfirmation ?: MsgConfirmation(
@@ -37,7 +36,12 @@ fun NavHost(
         positiveLabel = stringResource(Res.string.yes_leave)
     )
 
-    CompositionLocalProvider(value = LocalNavController provides navController) {
+    val snackbarHostState = remember { CustomSnackbarHostState() }
+
+    CompositionLocalProvider(
+        LocalSnackbarHostState provides snackbarHostState,
+        LocalNavController provides navController
+    ) {
         NavigationScaffold(
             screenProvider = screenProvider,
             scrollBehavior = scrollBehavior,

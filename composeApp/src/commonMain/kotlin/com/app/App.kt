@@ -9,8 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.core.ui.CustomSnackbarHostState
-import com.core.ui.LocalSnackbarHostState
 import com.core.ui.provider.LocalScreenConfigProvider
 import com.core.ui.provider.ScreenConfigProvider
 import com.core.ui.provider.ScreenProvider
@@ -21,8 +19,6 @@ import org.koin.dsl.koinApplication
 
 @Composable
 fun App() {
-    val snackbarHostState = remember { CustomSnackbarHostState() }
-
     var screenProvider by remember { mutableStateOf(ScreenProvider()) }
     val screenConfigProvider = object : ScreenConfigProvider {
         override fun setProvider(provider: ScreenProvider) {
@@ -35,14 +31,10 @@ fun App() {
     }) {
         AppTheme {
             CompositionLocalProvider(
-                LocalSnackbarHostState provides snackbarHostState,
-                LocalScreenConfigProvider provides screenConfigProvider
+                value = LocalScreenConfigProvider provides screenConfigProvider
             ) {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    NavHost(
-                        screenProvider = screenProvider,
-                        snackbarHostState = snackbarHostState
-                    )
+                    NavHost(screenProvider = screenProvider)
                 }
             }
         }
