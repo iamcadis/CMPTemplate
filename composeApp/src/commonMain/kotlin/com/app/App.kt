@@ -13,6 +13,7 @@ import com.core.ui.provider.LocalScreenConfigProvider
 import com.core.ui.provider.ScreenConfigProvider
 import com.core.ui.provider.ScreenProvider
 import com.design.system.AppTheme
+import com.feature.auth.di.authModule
 import com.feature.home.di.homeModule
 import org.koin.compose.KoinIsolatedContext
 import org.koin.dsl.koinApplication
@@ -27,7 +28,7 @@ fun App() {
     }
 
     KoinIsolatedContext(context = koinApplication {
-        modules(homeModule)
+        modules(homeModule, authModule)
     }) {
         AppTheme {
             CompositionLocalProvider(

@@ -28,9 +28,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 internal fun HomeContent(
     state: HomeState,
-    onOpenTestPage: () -> Unit = {},
-    onTestError: () -> Unit = {},
-    onTestLoading: () -> Unit = {},
+    dispatch: (HomeAction) -> Unit = {}
 ) {
     val date = remember(state.currentDate) {
         state.currentDate.date.asString(
@@ -85,9 +83,8 @@ internal fun HomeContent(
                         title = item,
                         onClick = {
                             when(item) {
-                                "Open Test Page" -> onOpenTestPage()
-                                "Show Snackbar" -> onTestError()
-                                "Show Loading" -> onTestLoading()
+                                "Show Snackbar" -> dispatch(HomeAction.TestShowError)
+                                "Show Loading" -> dispatch(HomeAction.ToggleLoading)
                                 else -> {}
                             }
                         }

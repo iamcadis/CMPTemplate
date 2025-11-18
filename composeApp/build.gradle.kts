@@ -8,6 +8,7 @@ kotlin {
             implementation(libs.activity)
         }
         commonMain.dependencies {
+            implementation(project(":feature:auth"))
             implementation(project(":feature:home"))
         }
         commonTest.dependencies {

@@ -25,11 +25,9 @@ fun KotlinMultiplatformExtension.addIosTarget() {
     }
 }
 
-fun KotlinMultiplatformExtension.suppressOptIn() {
+fun KotlinMultiplatformExtension.suppressExpectClass() {
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
         freeCompilerArgs.add("-opt-in=kotlinx.cinterop.ExperimentalForeignApi")
-        freeCompilerArgs.add("-opt-in=androidx.compose.ui.ExperimentalComposeUiApi")
-        freeCompilerArgs.add("-opt-in=androidx.compose.material3.ExperimentalMaterial3Api")
     }
 }

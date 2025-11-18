@@ -5,7 +5,7 @@ import btk.digital.convention.extension.addIosTarget
 import btk.digital.convention.extension.configureAndroid
 import btk.digital.convention.extension.getLibrary
 import btk.digital.convention.extension.getPluginId
-import btk.digital.convention.extension.suppressOptIn
+import btk.digital.convention.extension.suppressExpectClass
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -44,7 +44,7 @@ class KMPApplicationPlugin : Plugin<Project> {
             configure<KotlinMultiplatformExtension> {
                 addAndroidTarget()
                 addIosTarget()
-                suppressOptIn()
+                suppressExpectClass()
 
                 sourceSets {
                     commonMain.dependencies {

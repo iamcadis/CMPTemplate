@@ -12,23 +12,24 @@ import kotlinx.datetime.TimeZone
 @Immutable
 data class HomeState(
     override val pageLoading: Boolean,
+    val pageShimmer: Boolean,
     val currentDate: LocalDateTime
 ) : ViewState {
     companion object {
         @Stable
         val Initial = HomeState(
             pageLoading = false,
+            pageShimmer = true,
             currentDate = LocalDateTime.current(TimeZone.UTC)
         )
     }
 }
 
 sealed interface HomeAction : ViewAction {
-    data object OpenTestPage: HomeAction
     data object TestShowError: HomeAction
     data object ToggleLoading: HomeAction
 }
 
 sealed interface HomeEffect : ViewEffect {
-    data object NavigateToTestRoute: HomeEffect
+    data object NavigateToAuthRoute: HomeEffect
 }

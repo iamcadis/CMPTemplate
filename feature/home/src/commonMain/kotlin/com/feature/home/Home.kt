@@ -2,7 +2,6 @@ package com.feature.home
 
 import androidx.compose.runtime.Composable
 import com.core.ui.BaseScreen
-import com.feature.home.screen.HomeAction
 import com.feature.home.screen.HomeContent
 import com.feature.home.screen.HomeEffect
 import com.feature.home.screen.HomeViewModel
@@ -17,22 +16,18 @@ object Home {
     object Route
 
     @Composable
-    fun Screen(onNavigateToTestPage: () -> Unit) {
+    fun Screen(onNavigateToAuthRoute: () -> Unit) {
         BaseScreen(
             viewModel = koinViewModel<HomeViewModel>(),
             pageTitle = stringResource(Res.string.title),
             onEffect = { effect ->
                 when(effect) {
-                    HomeEffect.NavigateToTestRoute -> onNavigateToTestPage()
+                    HomeEffect.NavigateToAuthRoute -> onNavigateToAuthRoute()
                 }
+            },
+            content = { state, dispatch ->
+                HomeContent(state = state, dispatch = dispatch)
             }
-        ) { state, dispatch ->
-            HomeContent(
-                state = state,
-                onOpenTestPage = { dispatch(HomeAction.OpenTestPage) },
-                onTestError = { dispatch(HomeAction.TestShowError) },
-                onTestLoading = { dispatch(HomeAction.ToggleLoading) },
-            )
-        }
+        )
     }
 }

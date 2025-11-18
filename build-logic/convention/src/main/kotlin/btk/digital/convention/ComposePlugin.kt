@@ -35,6 +35,11 @@ class ComposePlugin : Plugin<Project> {
                         implementation(compose.components.uiToolingPreview)
                     }
                 }
+
+                compilerOptions {
+                    freeCompilerArgs.add("-opt-in=androidx.compose.ui.ExperimentalComposeUiApi")
+                    freeCompilerArgs.add("-opt-in=androidx.compose.material3.ExperimentalMaterial3Api")
+                }
             }
 
             target.dependencies {
