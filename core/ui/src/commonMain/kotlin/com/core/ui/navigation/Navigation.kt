@@ -3,18 +3,15 @@ package com.core.ui.navigation
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.core.ui.utility.TopAppBarStateMapSaver
+import com.core.ui.utility.MapOfTopAppBarStateSaver
 
 val LocalNavController = staticCompositionLocalOf<NavController> {
     error("NavController not found!")
@@ -32,20 +29,15 @@ val LocalNavController = staticCompositionLocalOf<NavController> {
  */
 @Composable
 fun NavController.rememberPinnedScrollBehavior(): TopAppBarScrollBehavior {
-    val topAppBarStates = rememberSaveable(saver = TopAppBarStateMapSaver) {
+    val currentEntry by currentBackStackEntryAsState()
+    val currentRoute = currentEntry?.destination?.route
+    val topAppBarStates = rememberSaveable(saver = MapOfTopAppBarStateSaver) {
         mutableStateMapOf()
     }
 
-    val backStackEntry by currentBackStackEntryAsState()
-    val backStackEntries by currentBackStack.collectAsStateWithLifecycle()
-
-    val currentRoute = backStackEntry?.destination?.route
-    val defaultState = rememberTopAppBarState()
-    val backStackRoutes = backStackEntries.mapNotNull { it.destination.route }.toSet()
-
     val topAppBarState = remember(currentRoute) {
         if (currentRoute.isNullOrBlank()) {
-            defaultState
+            TopAppBarState(0f, 0f, 0f)
         } else {
             topAppBarStates.getOrPut(currentRoute) {
                 TopAppBarState(
@@ -57,9 +49,5 @@ fun NavController.rememberPinnedScrollBehavior(): TopAppBarScrollBehavior {
         }
     }
 
-    LaunchedEffect(backStackRoutes) {
-        topAppBarStates.keys.retainAll { it in backStackRoutes }
-    }
-
-    return TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
+    return TopAppBarDefaults.pinnedScrollBehavior(state = topAppBarState)
 }

@@ -1,33 +1,35 @@
 package com.core.ui.utility
 
 import androidx.compose.material3.TopAppBarState
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.listSaver
-import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.saveable.mapSaver
+import kotlin.collections.ArrayList
 
 @Suppress("UNCHECKED_CAST")
-val TopAppBarStateMapSaver: Saver<SnapshotStateMap<String, TopAppBarState>, Any> =
-    listSaver(
-        save = { map ->
-            val stateSaver = TopAppBarState.Saver as Saver<TopAppBarState, List<Float>>
+val MapOfTopAppBarStateSaver = mapSaver(
+    save = { originalMap: Map<String, TopAppBarState> ->
+        originalMap.mapValues { entry ->
+            val state = entry.value
+            arrayListOf(
+                state.heightOffsetLimit,
+                state.heightOffset,
+                state.contentOffset
+            )
+        }
+    },
+    restore = { savedMap: Map<String, Any?> ->
+        val restoredMap = mutableStateMapOf<String, TopAppBarState>()
 
-            map.toList().flatMap { (key, state) ->
-                val savedState = with(stateSaver) { save(state) }
-                listOf(key, savedState)
-            }
-        },
-        restore = { list ->
-            val stateSaver = TopAppBarState.Saver as Saver<TopAppBarState, List<Float>>
-
-            val map = list.chunked(2).associate { chunk ->
-                val key = chunk[0] as String
-                val savedState = chunk[1] as List<Float>
-                val state = stateSaver.restore(savedState)
-                key to state!!
-            }.toMap()
-
-            SnapshotStateMap<String, TopAppBarState>().apply {
-                putAll(map)
+        savedMap.forEach { (key, value) ->
+            val list = value as? ArrayList<Float>
+            if (list != null && list.size == 3) {
+                restoredMap[key] = TopAppBarState(
+                    initialHeightOffsetLimit = list[0],
+                    initialHeightOffset = list[1],
+                    initialContentOffset = list[2]
+                )
             }
         }
-    )
+        restoredMap
+    }
+)

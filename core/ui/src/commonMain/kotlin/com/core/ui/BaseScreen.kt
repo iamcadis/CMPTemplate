@@ -26,7 +26,7 @@ fun <S : ViewState, A : ViewAction, E : ViewEffect> BaseScreen(
     leavingConfirmation: MsgConfirmation? = null,
     topAppBarActions: @Composable (RowScope.() -> Unit)? = null,
     floatingActionButton: @Composable (() -> Unit)? = null,
-    onEffect: (effect: E) -> Unit,
+    onEffect: (effect: E) -> Unit = { },
     content: @Composable (state: S, dispatch: (A) -> Unit) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
