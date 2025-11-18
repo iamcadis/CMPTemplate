@@ -2,7 +2,7 @@ package com.feature.home.screen
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import com.core.extension.current
+import com.core.common.current
 import com.core.viewmodel.ViewAction
 import com.core.viewmodel.ViewEffect
 import com.core.viewmodel.ViewState

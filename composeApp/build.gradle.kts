@@ -8,7 +8,6 @@ kotlin {
             implementation(libs.activity)
         }
         commonMain.dependencies {
-            implementation(libs.backhandler)
             implementation(project(":feature:home"))
         }
         commonTest.dependencies {

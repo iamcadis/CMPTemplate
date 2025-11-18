@@ -3,6 +3,7 @@ package btk.digital.convention
 import btk.digital.convention.extension.addAndroidTarget
 import btk.digital.convention.extension.addIosTarget
 import btk.digital.convention.extension.configureAndroid
+import btk.digital.convention.extension.getLibrary
 import btk.digital.convention.extension.getPluginId
 import btk.digital.convention.extension.suppressOptIn
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
@@ -17,7 +18,6 @@ class KMPApplicationPlugin : Plugin<Project> {
         with(target.pluginManager) {
             apply(target.getPluginId(alias = "androidApplication"))
             apply(target.getPluginId(alias = "kotlinMultiplatform"))
-            apply(target.getPluginId(alias = "kotlinSerialization"))
             apply("base.compose")
         }
 
@@ -48,7 +48,8 @@ class KMPApplicationPlugin : Plugin<Project> {
 
                 sourceSets {
                     commonMain.dependencies {
-                        implementation(project(":core"))
+                        implementation(target.getLibrary("koin-compose"))
+                        implementation(project(":core:ui"))
                         implementation(project(":design-system"))
                     }
                 }

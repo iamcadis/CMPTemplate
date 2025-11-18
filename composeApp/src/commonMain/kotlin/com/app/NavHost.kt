@@ -1,33 +1,27 @@
 package com.app
 
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.BackHandler
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.app.ui.CustomTopAppBar
-import com.app.ui.LeaveConfirmation
-import com.app.ui.getDefaultConfirmation
-import com.app.ui.rememberPinnedScrollBehavior
-import com.core.LocalNavController
-import com.core.navigation.ScreenProvider
-import com.core.ui.CustomSnackbarHost
 import com.core.ui.CustomSnackbarHostState
+import com.core.ui.NavigationScaffold
+import com.core.ui.data.MsgConfirmation
+import com.core.ui.navigation.LocalNavController
+import com.core.ui.navigation.enterTransition
+import com.core.ui.navigation.exitTransition
+import com.core.ui.navigation.rememberPinnedScrollBehavior
+import com.core.ui.provider.ScreenProvider
 import com.feature.home.screen.HomeRoute
+import org.jetbrains.compose.resources.stringResource
+import template.composeapp.generated.resources.Res
+import template.composeapp.generated.resources.leave_page_message
+import template.composeapp.generated.resources.leave_page_title
+import template.composeapp.generated.resources.stay_here
+import template.composeapp.generated.resources.yes_leave
 
 @Composable
 fun NavHost(
@@ -36,100 +30,48 @@ fun NavHost(
 ) {
     val navController = rememberNavController()
     val scrollBehavior = navController.rememberPinnedScrollBehavior()
-
-    var showConfirmation by rememberSaveable { mutableStateOf(false) }
-    val dismissConfirmation: () -> Unit = {
-        showConfirmation = false
-    }
-
-    val backPressHandler: () -> Unit = {
-        if (screenProvider?.confirmOnLeave == true) {
-            showConfirmation = true
-        } else {
-            navController.navigateUp()
-        }
-    }
+    val msgConfirmation = screenProvider?.msgConfirmation ?: MsgConfirmation(
+        title = stringResource(Res.string.leave_page_title),
+        message = stringResource(Res.string.leave_page_message),
+        negativeLabel = stringResource(Res.string.stay_here),
+        positiveLabel = stringResource(Res.string.yes_leave)
+    )
 
     CompositionLocalProvider(value = LocalNavController provides navController) {
-        Scaffold(
-            modifier = Modifier.nestedScroll(connection = scrollBehavior.nestedScrollConnection),
-            snackbarHost = {
-                CustomSnackbarHost(state = snackbarHostState)
-            },
-            topBar = {
-                CustomTopAppBar(
-                    screenProvider = screenProvider,
-                    scrollBehavior = scrollBehavior,
-                    onBackPress = backPressHandler
-                )
-            },
-            floatingActionButton = {
-                screenProvider?.fab?.let { it() }
-            },
-            content = { paddingValues ->
-                NavHost(
-                    navController = navController,
-                    startDestination = HomeRoute,
-                    modifier = Modifier.padding(paddingValues),
-                    enterTransition = {
-                        enterTransition(
-                            towards = AnimatedContentTransitionScope.SlideDirection.Start
-                        )
-                    },
-                    exitTransition = {
-                        exitTransition(
-                            towards = AnimatedContentTransitionScope.SlideDirection.Start
-                        )
-                    },
-                    popEnterTransition = {
-                        enterTransition(
-                            towards = AnimatedContentTransitionScope.SlideDirection.End
-                        )
-                    },
-                    popExitTransition = {
-                        exitTransition(
-                            towards = AnimatedContentTransitionScope.SlideDirection.End
-                        )
-                    },
-                    builder = { buildScreens(navController) }
-                )
-
-                BackHandler(onBack = backPressHandler)
-
-                screenProvider?.let { provider ->
-                    LeaveConfirmation(
-                        show = showConfirmation,
-                        confirmation = provider.confirmationData ?: getDefaultConfirmation(),
-                        onCancel = dismissConfirmation,
-                        onConfirm = {
-                            dismissConfirmation()
-                            navController.navigateUp()
-                        }
+        NavigationScaffold(
+            screenProvider = screenProvider,
+            scrollBehavior = scrollBehavior,
+            snackbarHostState = snackbarHostState,
+            leavingMsgConfirmation = msgConfirmation,
+            canGoBack = navController.previousBackStackEntry != null,
+            onGoBack = { navController.navigateUp() }
+        ) { paddingValues ->
+            NavHost(
+                navController = navController,
+                startDestination = HomeRoute,
+                modifier = Modifier.padding(paddingValues),
+                enterTransition = {
+                    enterTransition(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Start
                     )
-                }
-            }
-        )
+                },
+                exitTransition = {
+                    exitTransition(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Start
+                    )
+                },
+                popEnterTransition = {
+                    enterTransition(
+                        towards = AnimatedContentTransitionScope.SlideDirection.End
+                    )
+                },
+                popExitTransition = {
+                    exitTransition(
+                        towards = AnimatedContentTransitionScope.SlideDirection.End
+                    )
+                },
+                builder = { buildScreens(navController) }
+            )
+        }
     }
 }
-
-private const val DEFAULT_DURATION_MILLIS = 300
-
-private fun AnimatedContentTransitionScope<NavBackStackEntry>.enterTransition(
-    towards: AnimatedContentTransitionScope.SlideDirection
-) = fadeIn(
-    animationSpec = tween(durationMillis = DEFAULT_DURATION_MILLIS, easing = LinearEasing)
-) + slideIntoContainer(
-    towards = towards,
-    animationSpec = tween(durationMillis = DEFAULT_DURATION_MILLIS, easing = LinearEasing),
-    initialOffset = { it }
-)
-
-private fun AnimatedContentTransitionScope<NavBackStackEntry>.exitTransition(
-    towards: AnimatedContentTransitionScope.SlideDirection
-) = fadeOut(
-    animationSpec = tween(durationMillis = 300, easing = LinearEasing)
-) + slideOutOfContainer(
-    towards = towards,
-    animationSpec = tween(durationMillis = DEFAULT_DURATION_MILLIS, easing = LinearEasing),
-    targetOffset = { -it }
-)

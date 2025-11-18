@@ -17,11 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.core.extension.asString
-import com.core.extension.toCurrency
+import com.core.common.asString
+import com.core.common.toCurrency
 import com.core.ui.BaseScreen
 import com.design.system.extension.section
 import kotlinx.datetime.TimeZone
@@ -61,24 +60,24 @@ private fun HomeContent(
     val date = remember(state.currentDate) {
         state.currentDate.date.asString(
             format = "d MMM yyyy",
-            locale = Locale("id-ID"),
+            languageTag = "id-ID",
         )
     }
 
     val time = remember(state.currentDate) {
         state.currentDate.time.asString(
             format = "HH:mm zzz",
-            locale = Locale("id-ID"),
-            atZone = TimeZone.UTC
+            atZone = TimeZone.UTC,
+            languageTag = "id-ID"
         )
     }
 
     val dateTime = remember(state.currentDate) {
         state.currentDate.asString(
             format = "d MMMM yyyy, HH:mm zzz",
-            locale = Locale("id-ID"),
             atZone = TimeZone.UTC,
             toZone = TimeZone.currentSystemDefault(),
+            languageTag = "id-ID"
         )
     }
 
@@ -132,7 +131,9 @@ private fun HomeContent(
                 Text("CURRENT: ${state.currentDate}")
                 Text("CURRENT IN UTC: $date, $time")
                 Text("CURRENT IN DEVICE: $dateTime")
-                Text("CURRENCY LOCALE ID: ${123.598.toCurrency(locale = Locale("id-ID"))}")
+                Text("CURRENCY LOCALE ID: ${123.598.toCurrency(
+                    languageTag = "id-ID"
+                )}")
             }
         }
     }

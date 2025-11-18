@@ -1,5 +1,6 @@
 package btk.digital.convention
 
+import btk.digital.convention.extension.getBundle
 import btk.digital.convention.extension.getPluginId
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -19,7 +20,10 @@ class KMPFeaturePlugin : Plugin<Project> {
             configure<KotlinMultiplatformExtension> {
                 sourceSets {
                     commonMain.dependencies {
-                        implementation(project(":core"))
+                        implementation(target.getBundle("koin"))
+                        implementation(project(":core:common"))
+                        implementation(project(":core:viewmodel"))
+                        implementation(project(":core:ui"))
                         implementation(project(":design-system"))
                     }
                 }
