@@ -8,10 +8,6 @@ import com.core.viewmodel.ViewEffect
 import com.core.viewmodel.ViewState
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.serialization.Serializable
-
-@Serializable
-object HomeRoute
 
 @Immutable
 data class HomeState(

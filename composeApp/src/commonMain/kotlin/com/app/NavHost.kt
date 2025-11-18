@@ -15,7 +15,7 @@ import com.core.ui.navigation.enterTransition
 import com.core.ui.navigation.exitTransition
 import com.core.ui.navigation.rememberPinnedScrollBehavior
 import com.core.ui.provider.ScreenProvider
-import com.feature.home.screen.HomeRoute
+import com.feature.home.Home
 import org.jetbrains.compose.resources.stringResource
 import template.composeapp.generated.resources.Res
 import template.composeapp.generated.resources.leave_page_message
@@ -48,7 +48,7 @@ fun NavHost(
         ) { paddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = HomeRoute,
+                startDestination = Home.Route,
                 modifier = Modifier.padding(paddingValues),
                 enterTransition = {
                     enterTransition(

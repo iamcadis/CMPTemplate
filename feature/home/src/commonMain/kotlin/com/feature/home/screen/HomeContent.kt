@@ -21,37 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.core.common.asString
 import com.core.common.toCurrency
-import com.core.ui.BaseScreen
 import com.design.system.extension.section
 import kotlinx.datetime.TimeZone
-import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
-import template.feature.home.generated.resources.Res
-import template.feature.home.generated.resources.title
 
 @Composable
-fun HomeScreen(onNavigateToTestPage: () -> Unit) {
-    BaseScreen(
-        viewModel = koinViewModel<HomeViewModel>(),
-        pageTitle = stringResource(Res.string.title),
-        onEffect = { effect ->
-            when(effect) {
-                HomeEffect.NavigateToTestRoute -> onNavigateToTestPage()
-            }
-        }
-    ) { state, dispatch ->
-        HomeContent(
-            state = state,
-            onOpenTestPage = { dispatch(HomeAction.OpenTestPage) },
-            onTestError = { dispatch(HomeAction.TestShowError) },
-            onTestLoading = { dispatch(HomeAction.ToggleLoading) },
-        )
-    }
-}
-
-@Composable
-private fun HomeContent(
+internal fun HomeContent(
     state: HomeState,
     onOpenTestPage: () -> Unit = {},
     onTestError: () -> Unit = {},
