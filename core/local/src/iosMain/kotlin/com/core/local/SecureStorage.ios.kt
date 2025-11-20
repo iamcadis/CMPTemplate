@@ -44,23 +44,21 @@ class IOSSecureStorage : SecureStorage {
         return getValue(key)?.stringValue
     }
 
-    override suspend fun set(key: String, value: String) {
-        if (existsObject(key)) {
+    override suspend fun set(key: String, value: String) : Boolean {
+        return if (existsObject(key)) {
             update(key, value.toNSData())
         } else {
             add(key, value.toNSData())
         }
     }
 
-    override suspend fun remove(key: String) {
-        context(key) { (account) ->
-            val query = query(
-                kSecClass to kSecClassGenericPassword,
-                kSecAttrAccount to account
-            )
+    override suspend fun remove(key: String) : Boolean = context(key) { (account) ->
+        val query = query(
+            kSecClass to kSecClassGenericPassword,
+            kSecAttrAccount to account
+        )
 
-            SecItemDelete(query)
-        }
+        SecItemDelete(query).validate()
     }
 
     private fun existsObject(forKey: String): Boolean = context(forKey) { (account) ->
@@ -73,7 +71,7 @@ class IOSSecureStorage : SecureStorage {
         SecItemCopyMatching(query, null).validate()
     }
 
-    private fun add(key: String, value: NSData?) = context(key, value) { (account, data) ->
+    private fun add(key: String, value: NSData?) : Boolean = context(key, value) { (account, data) ->
         val query = query(
             kSecClass to kSecClassGenericPassword,
             kSecAttrAccount to account,
@@ -81,10 +79,10 @@ class IOSSecureStorage : SecureStorage {
             kSecAttrAccessible to kSecAttrAccessibleWhenUnlocked
         )
 
-        SecItemAdd(query, null)
+        SecItemAdd(query, null).validate()
     }
 
-    private fun update(key: String, value: NSData?) = context(key, value) { (account, data) ->
+    private fun update(key: String, value: NSData?) : Boolean = context(key, value) { (account, data) ->
         val query = query(
             kSecClass to kSecClassGenericPassword,
             kSecAttrAccount to account,
@@ -93,7 +91,7 @@ class IOSSecureStorage : SecureStorage {
 
         val updateQuery = query(kSecValueData to data)
 
-        SecItemUpdate(query, updateQuery)
+        SecItemUpdate(query, updateQuery).validate()
     }
 
     private fun getValue(forKey: String): NSData? = context(forKey) { (account) ->

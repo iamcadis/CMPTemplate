@@ -15,9 +15,14 @@ class AuthViewModel(
         when(action) {
             AuthAction.SignIn -> {
                 launchSafe {
+                    updateState { copy(pageLoading = true) }
                     delay(500)
-                    secureStorage.set("access_token", "testing")
-                    userPreferences.storeUserId(1)
+                    updateState { copy(pageLoading = false) }
+
+                    val isSuccess = secureStorage.set("access_token", "testing")
+                    if (isSuccess) {
+                        userPreferences.storeUserId(1)
+                    }
                 }
             }
         }

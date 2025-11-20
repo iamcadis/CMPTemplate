@@ -3,6 +3,7 @@ package com.core.local
 import android.content.Context
 import android.os.Build
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -13,6 +14,7 @@ import com.google.crypto.tink.hybrid.HybridConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import java.io.IOException
 import android.util.Base64 as AndroidBase64
 import java.util.Base64 as JavaBase64
 
@@ -52,7 +54,7 @@ class AndroidSecureStorage(
         }
     }
 
-    override suspend fun set(key: String, value: String) {
+    override suspend fun set(key: String, value: String) : Boolean {
         val encryptedBytes = aead.encrypt(value.toByteArray(), null)
         val encryptedBase64 = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             JavaBase64.getEncoder().encodeToString(encryptedBytes)
@@ -60,14 +62,29 @@ class AndroidSecureStorage(
             AndroidBase64.encodeToString(encryptedBytes, AndroidBase64.DEFAULT)
         }
 
-        dataStore.edit { prefs ->
+        return dataStore.safeEdit { prefs ->
             prefs[stringPreferencesKey(key)] = encryptedBase64
         }
     }
 
-    override suspend fun remove(key: String) {
-        dataStore.edit { prefs ->
+    override suspend fun remove(key: String) : Boolean {
+        return dataStore.safeEdit { prefs ->
             prefs.remove(stringPreferencesKey(key))
+        }
+    }
+
+    suspend fun DataStore<Preferences>.safeEdit(
+        action: (MutablePreferences) -> Unit
+    ): Boolean {
+        return try {
+            this.edit { action(it) }
+            true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            false
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
 }
