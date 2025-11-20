@@ -1,13 +1,21 @@
 package com.core.local
 
-import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.alloc
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
+import platform.CoreFoundation.CFAutorelease
+import platform.CoreFoundation.CFDictionaryAddValue
+import platform.CoreFoundation.CFDictionaryCreateMutable
 import platform.CoreFoundation.CFDictionaryRef
+import platform.CoreFoundation.CFStringRef
+import platform.CoreFoundation.CFTypeRef
 import platform.CoreFoundation.CFTypeRefVar
+import platform.CoreFoundation.kCFBooleanFalse
+import platform.CoreFoundation.kCFBooleanTrue
 import platform.Foundation.CFBridgingRelease
+import platform.Foundation.CFBridgingRetain
 import platform.Foundation.NSData
 import platform.Foundation.NSString
 import platform.Foundation.NSUTF8StringEncoding
@@ -16,7 +24,7 @@ import platform.Foundation.dataUsingEncoding
 import platform.Security.SecItemAdd
 import platform.Security.SecItemCopyMatching
 import platform.Security.SecItemDelete
-import platform.Security.errSecSuccess
+import platform.Security.SecItemUpdate
 import platform.Security.kSecAttrAccessible
 import platform.Security.kSecAttrAccessibleWhenUnlocked
 import platform.Security.kSecAttrAccount
@@ -26,52 +34,112 @@ import platform.Security.kSecMatchLimit
 import platform.Security.kSecMatchLimitOne
 import platform.Security.kSecReturnData
 import platform.Security.kSecValueData
+import platform.darwin.OSStatus
+import platform.darwin.noErr
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 class IOSSecureStorage : SecureStorage {
-    @OptIn(BetaInteropApi::class)
+
     override suspend operator fun get(key: String): String? {
-        val query = mutableMapOf<Any?, Any?>(
-            kSecClass to kSecClassGenericPassword,
-            kSecAttrAccount to key,
-            kSecReturnData to true,
-            kSecMatchLimit to kSecMatchLimitOne
-        )
-
-        return memScoped {
-            val result = alloc<CFTypeRefVar>()
-
-            if (SecItemCopyMatching(query as CFDictionaryRef, result.ptr) != errSecSuccess) {
-                return@memScoped null
-            }
-
-            val data = CFBridgingRelease(result.value) as? NSData ?: return@memScoped null
-            NSString.create(data = data, encoding = NSUTF8StringEncoding)?.toString()
-        }
+        return getValue(key)?.stringValue
     }
 
     override suspend fun set(key: String, value: String) {
-        val data = (value as NSString).dataUsingEncoding(NSUTF8StringEncoding) ?: return
-
-        // Define the query
-        val query = mutableMapOf<Any?, Any?>(
-            kSecClass to kSecClassGenericPassword,
-            kSecAttrAccount to key,
-            kSecValueData to data,
-            // Essential for overwriting existing keys:
-            kSecAttrAccessible to kSecAttrAccessibleWhenUnlocked
-        )
-
-        // Delete if exists, then add
-        SecItemDelete(query as CFDictionaryRef)
-        SecItemAdd(query as CFDictionaryRef, null)
+        if (existsObject(key)) {
+            update(key, value.toNSData())
+        } else {
+            add(key, value.toNSData())
+        }
     }
 
     override suspend fun remove(key: String) {
-        val query = mapOf(
-            kSecClass to kSecClassGenericPassword,
-            kSecAttrAccount to key
-        )
-        SecItemDelete(query as CFDictionaryRef)
+        context(key) { (account) ->
+            val query = query(
+                kSecClass to kSecClassGenericPassword,
+                kSecAttrAccount to account
+            )
+
+            SecItemDelete(query)
+        }
     }
+
+    private fun existsObject(forKey: String): Boolean = context(forKey) { (account) ->
+        val query = query(
+            kSecClass to kSecClassGenericPassword,
+            kSecAttrAccount to account,
+            kSecReturnData to kCFBooleanFalse,
+        )
+
+        SecItemCopyMatching(query, null).validate()
+    }
+
+    private fun add(key: String, value: NSData?) = context(key, value) { (account, data) ->
+        val query = query(
+            kSecClass to kSecClassGenericPassword,
+            kSecAttrAccount to account,
+            kSecValueData to data,
+            kSecAttrAccessible to kSecAttrAccessibleWhenUnlocked
+        )
+
+        SecItemAdd(query, null)
+    }
+
+    private fun update(key: String, value: NSData?) = context(key, value) { (account, data) ->
+        val query = query(
+            kSecClass to kSecClassGenericPassword,
+            kSecAttrAccount to account,
+            kSecReturnData to kCFBooleanFalse,
+        )
+
+        val updateQuery = query(kSecValueData to data)
+
+        SecItemUpdate(query, updateQuery)
+    }
+
+    private fun getValue(forKey: String): NSData? = context(forKey) { (account) ->
+        val query = query(
+            kSecClass to kSecClassGenericPassword,
+            kSecAttrAccount to account,
+            kSecReturnData to kCFBooleanTrue,
+            kSecMatchLimit to kSecMatchLimitOne,
+        )
+
+        memScoped {
+            val result = alloc<CFTypeRefVar>()
+            SecItemCopyMatching(query, result.ptr)
+            CFBridgingRelease(result.value) as? NSData
+        }
+    }
+
+    private class Context(val refs: Map<CFStringRef?, CFTypeRef?>) {
+        fun query(vararg pairs: Pair<CFStringRef?, CFTypeRef?>): CFDictionaryRef? {
+            val map = mapOf(*pairs).plus(refs.filter { it.value != null })
+            return CFDictionaryCreateMutable(
+                null, map.size.convert(), null, null
+            ).apply {
+                map.entries.forEach { CFDictionaryAddValue(this, it.key, it.value) }
+            }.apply {
+                CFAutorelease(this)
+            }
+        }
+    }
+
+    private fun <T> context(vararg values: Any?, block: Context.(List<CFTypeRef?>) -> T): T {
+        val custom = arrayOf(*values).map { CFBridgingRetain(it) }
+
+        try {
+            return block.invoke(Context(emptyMap()), custom)
+        } finally {
+            custom.forEach { CFBridgingRelease(it) }
+        }
+    }
+
+    private val NSData.stringValue: String?
+        get() = NSString.create(this, NSUTF8StringEncoding) as? String
+
+    private fun String.toNSData() = NSString
+        .create(string = this)
+        .dataUsingEncoding(NSUTF8StringEncoding)
+
+    private fun OSStatus.validate(): Boolean = toUInt() == noErr
 }

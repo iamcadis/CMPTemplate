@@ -14,7 +14,9 @@ import platform.Foundation.NSUserDomainMask
 
 internal actual val platformModule: Module
     get() = module {
-        single<SecureStorage> { IOSSecureStorage() }
+        single<SecureStorage> {
+            IOSSecureStorage()
+        }
         single<LocalStorage> {
             LocalStorageImpl(
                 dataStore = PreferenceDataStoreFactory.createWithPath(

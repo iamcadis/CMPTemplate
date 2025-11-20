@@ -6,7 +6,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -16,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.di.coreModules
@@ -55,9 +58,6 @@ fun App() {
     }) {
         val userPrefs = koinInject<UserPreferences>()
         val userHasLogin by userPrefs.userHasLogin.collectAsStateWithLifecycle(initialValue = false)
-
-        val isContentReady = !showSplashScreen && userHasLogin
-
         AppTheme {
             CompositionLocalProvider(
                 value = LocalScreenConfigProvider provides screenConfigProvider
@@ -65,17 +65,19 @@ fun App() {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     AnimatedContent(
                         label = "Content Transition",
-                        targetState = isContentReady,
+                        targetState = showSplashScreen,
                         transitionSpec = {
                             fadeIn(animationSpec = tween(SPLASH_TIME)) +
                                     scaleIn(initialScale = 0.92f) togetherWith
                                     fadeOut(animationSpec = tween(SPLASH_TIME))
                         }
-                    ) { targetState ->
-                        if (targetState) {
-                            NavHost(userHasLogin = userHasLogin, screenProvider = screenProvider)
+                    ) { showSplash ->
+                        if (showSplash) {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator()
+                            }
                         } else {
-                            SplashScreen()
+                            NavHost(userHasLogin = userHasLogin, screenProvider = screenProvider)
                         }
                     }
                 }

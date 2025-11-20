@@ -1,9 +1,12 @@
 package com.feature.home.screen
 
+import com.core.local.SecureStorage
 import com.core.viewmodel.BaseViewModel
 import kotlinx.coroutines.delay
 
-class HomeViewModel : BaseViewModel<HomeState, HomeAction, HomeEffect>(
+class HomeViewModel(
+    private val secureStorage: SecureStorage
+) : BaseViewModel<HomeState, HomeAction, HomeEffect>(
     initialState = HomeState.Initial
 ) {
     override fun handleAction(action: HomeAction) {
@@ -20,12 +23,15 @@ class HomeViewModel : BaseViewModel<HomeState, HomeAction, HomeEffect>(
     }
 
     override fun loadInitialData() {
-//        launchSafe {
+        launchSafe {
 //            updateState { copy(pageLoading = true) }
 //            delay(timeMillis = 1000)
 ////            updateState { copy(pageShimmer = false) }
 //            updateState { copy(pageLoading = false) }
 //            sendEffect(effect = HomeEffect.NavigateToAuthRoute)
-//        }
+            secureStorage.get("access_token").also {
+                println("ACCESS_TOKEN => $it")
+            }
+        }
     }
 }
