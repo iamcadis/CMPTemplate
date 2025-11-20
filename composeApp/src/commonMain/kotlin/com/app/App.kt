@@ -1,23 +1,39 @@
 package com.app
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.app.di.coreModules
+import com.app.di.featureModules
+import com.core.local.UserPreferences
 import com.core.ui.provider.LocalScreenConfigProvider
 import com.core.ui.provider.ScreenConfigProvider
 import com.core.ui.provider.ScreenProvider
 import com.design.system.AppTheme
-import com.feature.auth.di.authModule
-import com.feature.home.di.homeModule
-import org.koin.compose.KoinIsolatedContext
-import org.koin.dsl.koinApplication
+import kotlinx.coroutines.delay
+import org.koin.compose.KoinMultiplatformApplication
+import org.koin.compose.koinInject
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.dsl.koinConfiguration
 
+private const val SPLASH_TIME = 700
+
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun App() {
     var screenProvider by remember { mutableStateOf(ScreenProvider()) }
@@ -27,15 +43,41 @@ fun App() {
         }
     }
 
-    KoinIsolatedContext(context = koinApplication {
-        modules(homeModule, authModule)
+    var showSplashScreen by rememberSaveable { mutableStateOf(true) }
+
+    LaunchedEffect(true) {
+        delay(SPLASH_TIME.toLong())
+        showSplashScreen = false
+    }
+
+    KoinMultiplatformApplication(config = koinConfiguration {
+        modules(coreModules, featureModules)
     }) {
+        val userPrefs = koinInject<UserPreferences>()
+        val userHasLogin by userPrefs.userHasLogin.collectAsStateWithLifecycle(initialValue = false)
+
+        val isContentReady = !showSplashScreen && userHasLogin
+
         AppTheme {
             CompositionLocalProvider(
                 value = LocalScreenConfigProvider provides screenConfigProvider
             ) {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    NavHost(screenProvider = screenProvider)
+                    AnimatedContent(
+                        label = "Content Transition",
+                        targetState = isContentReady,
+                        transitionSpec = {
+                            fadeIn(animationSpec = tween(SPLASH_TIME)) +
+                                    scaleIn(initialScale = 0.92f) togetherWith
+                                    fadeOut(animationSpec = tween(SPLASH_TIME))
+                        }
+                    ) { targetState ->
+                        if (targetState) {
+                            NavHost(userHasLogin = userHasLogin, screenProvider = screenProvider)
+                        } else {
+                            SplashScreen()
+                        }
+                    }
                 }
             }
         }

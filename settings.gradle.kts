@@ -31,6 +31,7 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 include(":core:common")
+include(":core:local")
 include(":core:viewmodel")
 include(":core:ui")
 include(":design-system")

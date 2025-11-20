@@ -17,6 +17,7 @@ import com.core.ui.navigation.enterTransition
 import com.core.ui.navigation.exitTransition
 import com.core.ui.navigation.rememberPinnedScrollBehavior
 import com.core.ui.provider.ScreenProvider
+import com.feature.auth.Auth
 import com.feature.home.Home
 import org.jetbrains.compose.resources.stringResource
 import template.composeapp.generated.resources.Res
@@ -26,7 +27,7 @@ import template.composeapp.generated.resources.stay_here
 import template.composeapp.generated.resources.yes_leave
 
 @Composable
-fun NavHost(screenProvider: ScreenProvider?) {
+fun NavHost(userHasLogin: Boolean, screenProvider: ScreenProvider?) {
     val navController = rememberNavController()
     val scrollBehavior = navController.rememberPinnedScrollBehavior()
     val msgConfirmation = screenProvider?.msgConfirmation ?: MsgConfirmation(
@@ -36,6 +37,7 @@ fun NavHost(screenProvider: ScreenProvider?) {
         positiveLabel = stringResource(Res.string.yes_leave)
     )
 
+    val startDestination = if (userHasLogin) Home.Route else Auth.Route
     val snackbarHostState = remember { CustomSnackbarHostState() }
 
     CompositionLocalProvider(
@@ -51,9 +53,9 @@ fun NavHost(screenProvider: ScreenProvider?) {
             onGoBack = { navController.navigateUp() }
         ) { paddingValues ->
             NavHost(
-                navController = navController,
-                startDestination = Home.Route,
                 modifier = Modifier.padding(paddingValues),
+                navController = navController,
+                startDestination = startDestination,
                 enterTransition = {
                     enterTransition(
                         towards = AnimatedContentTransitionScope.SlideDirection.Start

@@ -127,7 +127,7 @@ fun AuthContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* TODO: Handle login */ },
+            onClick = { dispatch(AuthAction.SignIn) },
             modifier = Modifier.fillMaxWidth().height(50.dp)
         ) {
             Text("Login")

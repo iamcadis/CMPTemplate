@@ -6,6 +6,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.bundles.kotlinx)
+            implementation(libs.koin.core)
         }
     }
 }

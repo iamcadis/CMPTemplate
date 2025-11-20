@@ -37,8 +37,8 @@ class ComposePlugin : Plugin<Project> {
                 }
 
                 compilerOptions {
-                    freeCompilerArgs.add("-opt-in=androidx.compose.ui.ExperimentalComposeUiApi")
-                    freeCompilerArgs.add("-opt-in=androidx.compose.material3.ExperimentalMaterial3Api")
+                    optIn.add("androidx.compose.ui.ExperimentalComposeUiApi")
+                    optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
                 }
             }
 

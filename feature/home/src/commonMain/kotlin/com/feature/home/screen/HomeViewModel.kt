@@ -20,12 +20,12 @@ class HomeViewModel : BaseViewModel<HomeState, HomeAction, HomeEffect>(
     }
 
     override fun loadInitialData() {
-        launchSafe {
-            updateState { copy(pageLoading = true) }
-            delay(timeMillis = 1000)
-//            updateState { copy(pageShimmer = false) }
-            updateState { copy(pageLoading = false) }
-            sendEffect(effect = HomeEffect.NavigateToAuthRoute)
-        }
+//        launchSafe {
+//            updateState { copy(pageLoading = true) }
+//            delay(timeMillis = 1000)
+////            updateState { copy(pageShimmer = false) }
+//            updateState { copy(pageLoading = false) }
+//            sendEffect(effect = HomeEffect.NavigateToAuthRoute)
+//        }
     }
 }

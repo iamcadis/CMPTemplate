@@ -49,6 +49,7 @@ class KMPApplicationPlugin : Plugin<Project> {
                 sourceSets {
                     commonMain.dependencies {
                         implementation(target.getLibrary("koin-compose"))
+                        implementation(project(":core:local"))
                         implementation(project(":core:ui"))
                         implementation(project(":design-system"))
                     }

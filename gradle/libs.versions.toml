@@ -9,6 +9,8 @@ kotlinx-collections = "0.4.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.1"
 navigation = "2.9.1"
+datastore = "1.1.7"
+tink-android = "1.19.0"
 
 [libraries]
 gradle-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -17,12 +19,17 @@ gradle-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", versi
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 activity = { module = "androidx.activity:activity-compose", version.ref = "activity" }
+datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
 backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose" }
 lifecycle-runtime = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+google-tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tink-android" }
+
 
 #KOIN
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin"}
 koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin"}
 koin-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin"}
 koin-viewmodel-navigation = { group = "io.insert-koin", name = "koin-compose-viewmodel-navigation", version.ref = "koin"}
@@ -33,9 +40,11 @@ kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutin
 kotlinx-collections = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections" }
 
 [bundles]
+# This bundle has been used in convention feature plugin, don't remove it
 koin = ["koin-compose", "koin-viewmodel", "koin-viewmodel-navigation"]
 kotlinx = ["kotlinx-collections", "kotlinx-coroutines", "kotlinx-datetime"]
 lifecycle = ["lifecycle-runtime", "lifecycle-viewmodel"]
+datastore = ["datastore", "datastore-preferences"]
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
