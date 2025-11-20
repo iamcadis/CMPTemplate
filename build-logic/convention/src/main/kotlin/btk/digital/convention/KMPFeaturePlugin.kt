@@ -23,6 +23,7 @@ class KMPFeaturePlugin : Plugin<Project> {
                         implementation(target.getBundle("koin"))
                         implementation(project(":core:common"))
                         implementation(project(":core:local"))
+                        implementation(project(":core:network"))
                         implementation(project(":core:viewmodel"))
                         implementation(project(":core:ui"))
                         implementation(project(":design-system"))

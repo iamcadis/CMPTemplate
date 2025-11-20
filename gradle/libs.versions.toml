@@ -11,6 +11,7 @@ kotlinx-datetime = "0.7.1"
 navigation = "2.9.1"
 datastore = "1.1.7"
 tink-android = "1.19.0"
+ktor = "3.3.2"
 
 [libraries]
 gradle-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -39,9 +40,19 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-collections = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections" }
 
+#KTOR
+ktor-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
+ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-content = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
+ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
 [bundles]
 # This bundle has been used in convention feature plugin, don't remove it
 koin = ["koin-compose", "koin-viewmodel", "koin-viewmodel-navigation"]
+ktor = ["ktor-auth", "ktor-core", "ktor-content", "ktor-logging", "ktor-serialization"]
 kotlinx = ["kotlinx-collections", "kotlinx-coroutines", "kotlinx-datetime"]
 lifecycle = ["lifecycle-runtime", "lifecycle-viewmodel"]
 datastore = ["datastore", "datastore-preferences"]

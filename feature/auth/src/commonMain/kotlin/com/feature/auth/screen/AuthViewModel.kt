@@ -1,6 +1,7 @@
 package com.feature.auth.screen
 
 import com.core.local.SecureStorage
+import com.core.local.SecureStorage.Companion.storeAccessToken
 import com.core.local.UserPreferences
 import com.core.viewmodel.BaseViewModel
 import kotlinx.coroutines.delay
@@ -19,7 +20,7 @@ class AuthViewModel(
                     delay(500)
                     updateState { copy(pageLoading = false) }
 
-                    val isSuccess = secureStorage.set("access_token", "testing")
+                    val isSuccess = secureStorage.storeAccessToken(token = "testing")
                     if (isSuccess) {
                         userPreferences.storeUserId(1)
                     }
