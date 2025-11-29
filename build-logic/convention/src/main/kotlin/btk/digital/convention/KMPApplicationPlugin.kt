@@ -38,6 +38,10 @@ class KMPApplicationPlugin : Plugin<Project> {
                     getByName("debug") {
                         applicationIdSuffix = ".debug"
                     }
+                    create("local") {
+                        initWith(getByName("debug"))
+                        applicationIdSuffix = ".local"
+                    }
                 }
             }
 

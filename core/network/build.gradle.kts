@@ -9,6 +9,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(project(":core:local"))
+            implementation(libs.koin.compose)
             implementation(libs.bundles.ktor)
         }
         iosMain.dependencies {
