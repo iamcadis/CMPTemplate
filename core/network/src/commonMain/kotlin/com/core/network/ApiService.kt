@@ -20,6 +20,18 @@ class ApiService(
     val dispatcher: DispatcherProvider,
     val connectivityObserver: ConnectivityObserver
 ) {
+
+    inline fun <reified T> get(url: String) = request<T>(
+        url = url,
+        method = HttpMethod.Get
+    )
+
+    inline fun <reified T> post(url: String, data: Any?) = request<T>(
+        url = url,
+        method = HttpMethod.Post,
+        data = data
+    )
+
     inline fun <reified T> request(
         url: String,
         method: HttpMethod,
